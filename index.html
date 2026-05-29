@@ -4,766 +4,1221 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CalorIA Verde — Plataforma Nutricional para Profissionais</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Space+Grotesk:wght@300;400;500;600;700&family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --ink: #0e1a10;
-  --forest: #1a4a1f;
-  --moss: #2d7a35;
-  --sage: #5a9a60;
-  --mint: #c8e6c9;
-  --cream: #f5f0e8;
-  --warm: #faf6ee;
-  --gold: #c8961a;
-  --gold-light: #f5c842;
-  --rust: #c44b1a;
-  --white: #ffffff;
-}
-
+/* ─── RESET & VARS ─── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { scroll-behavior: smooth; }
 
+:root {
+  --verde:    #0d5c1f;
+  --verde2:   #1a7a30;
+  --verde3:   #29a84a;
+  --lima:     #7ed848;
+  --lima2:    #b5f05a;
+  --creme:    #f7f2e8;
+  --creme2:   #ede7d5;
+  --ouro:     #d4a017;
+  --ouro2:    #f5c842;
+  --coral:    #e84c2b;
+  --coral2:   #ff7555;
+  --roxo:     #3d1a78;
+  --azul:     #0d4f8c;
+  --ink:      #0a1a0e;
+  --branco:   #ffffff;
+  --cinza:    #6b7c6e;
+}
+
 body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--cream);
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--creme);
   color: var(--ink);
   overflow-x: hidden;
 }
 
-/* ─── SCROLLBAR ─── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--cream); }
-::-webkit-scrollbar-thumb { background: var(--moss); border-radius: 3px; }
+::-webkit-scrollbar { width: 7px; }
+::-webkit-scrollbar-track { background: var(--creme); }
+::-webkit-scrollbar-thumb { background: var(--verde3); border-radius: 4px; }
+
+/* ─── CURSOR PERSONALIZADO ─── */
+.cursor-dot {
+  width: 12px; height: 12px; background: var(--lima2);
+  border-radius: 50%; position: fixed; pointer-events: none;
+  z-index: 9999; transition: transform 0.15s ease;
+  mix-blend-mode: difference;
+}
+.cursor-ring {
+  width: 36px; height: 36px; border: 2px solid var(--lima);
+  border-radius: 50%; position: fixed; pointer-events: none;
+  z-index: 9998; transition: all 0.3s ease;
+  mix-blend-mode: difference;
+}
+
+/* ─── NOISE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; opacity: 0.4;
+}
 
 /* ─── NAV ─── */
 nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 1.2rem 4rem;
-  background: rgba(245, 240, 232, 0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(26,74,31,0.08);
-  transition: padding 0.3s;
+  padding: 1.1rem 3rem;
+  background: rgba(247, 242, 232, 0.88);
+  backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 2px solid var(--verde);
+  transition: all 0.3s;
 }
+nav.scrolled {
+  padding: 0.7rem 3rem;
+  background: rgba(10, 26, 14, 0.96);
+  border-color: var(--lima);
+}
+nav.scrolled .nav-logo,
+nav.scrolled .nav-links a { color: var(--branco); }
+nav.scrolled .nav-links a:hover { color: var(--lima2); }
+
 .nav-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.6rem; font-weight: 700; font-style: italic;
-  color: var(--forest); letter-spacing: -0.5px;
+  font-family: 'Unbounded', sans-serif; font-size: 1.1rem; font-weight: 900;
+  color: var(--verde); letter-spacing: -1px; text-decoration: none;
+  display: flex; align-items: center; gap: 0.5rem;
 }
-.nav-logo span { color: var(--gold); }
-.nav-links { display: flex; align-items: center; gap: 2.5rem; }
+.nav-logo .logo-ia {
+  background: var(--verde); color: var(--lima2);
+  padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.85rem;
+}
+.nav-links { display: flex; align-items: center; gap: 2rem; }
 .nav-links a {
-  font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 600;
-  letter-spacing: 0.8px; text-transform: uppercase; text-decoration: none;
-  color: var(--forest); opacity: 0.7; transition: opacity 0.2s;
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.82rem; font-weight: 600;
+  letter-spacing: 0.5px; text-transform: uppercase; text-decoration: none;
+  color: var(--verde); transition: color 0.2s;
 }
-.nav-links a:hover { opacity: 1; }
+.nav-links a:hover { color: var(--verde3); }
+.nav-hamburger {
+  display: none; flex-direction: column; gap: 5px; cursor: pointer;
+  padding: 4px;
+}
+.nav-hamburger span {
+  display: block; width: 24px; height: 2px; background: var(--verde);
+  transition: all 0.3s;
+}
+nav.scrolled .nav-hamburger span { background: var(--lima2); }
 .nav-cta {
-  background: var(--forest); color: var(--white);
-  font-family: 'Syne', sans-serif; font-weight: 700;
-  font-size: 0.82rem; letter-spacing: 0.5px;
-  padding: 0.65rem 1.5rem; border-radius: 50px; border: none;
-  cursor: pointer; text-decoration: none;
-  transition: background 0.2s, transform 0.2s;
+  background: var(--verde); color: var(--lima2);
+  font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 0.7rem;
+  letter-spacing: 0.5px; padding: 0.6rem 1.3rem; border-radius: 4px;
+  border: none; cursor: pointer; text-decoration: none;
+  transition: all 0.2s; text-transform: uppercase;
 }
-.nav-cta:hover { background: var(--moss); transform: translateY(-1px); }
+.nav-cta:hover { background: var(--verde3); transform: translateY(-2px); }
+
+/* MOBILE MENU */
+.mobile-menu {
+  display: none; position: fixed; inset: 0; z-index: 499;
+  background: var(--ink); flex-direction: column;
+  align-items: center; justify-content: center; gap: 2rem;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.mobile-menu.open { opacity: 1; pointer-events: all; }
+.mobile-menu a {
+  font-family: 'Unbounded', sans-serif; font-size: 1.5rem; font-weight: 700;
+  color: var(--branco); text-decoration: none; text-align: center;
+  transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--lima2); }
+.mobile-close {
+  position: absolute; top: 1.5rem; right: 2rem;
+  font-size: 2rem; color: var(--branco); cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+}
 
 /* ─── HERO ─── */
 .hero {
   min-height: 100vh;
-  display: grid; grid-template-columns: 1fr 1fr;
-  padding: 0 4rem; padding-top: 80px;
+  display: grid; grid-template-columns: 55% 45%;
+  padding: 0 3rem; padding-top: 76px;
   position: relative; overflow: hidden;
+  background: var(--creme);
 }
+
+/* Fundo decorativo hero */
+.hero-bg-blob {
+  position: absolute; top: -10%; right: -5%; width: 65%; height: 100%;
+  background: radial-gradient(ellipse at 70% 40%, rgba(126, 216, 72, 0.18) 0%, rgba(29, 168, 74, 0.08) 50%, transparent 75%);
+  pointer-events: none;
+}
+.hero-bg-lines {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 79px,
+      rgba(13, 92, 31, 0.04) 79px,
+      rgba(13, 92, 31, 0.04) 80px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 79px,
+      rgba(13, 92, 31, 0.04) 79px,
+      rgba(13, 92, 31, 0.04) 80px
+    );
+}
+.hero-decor-circle {
+  position: absolute; bottom: -120px; left: -80px;
+  width: 400px; height: 400px; border-radius: 50%;
+  border: 3px solid rgba(126, 216, 72, 0.15);
+  pointer-events: none;
+  animation: spin-slow 30s linear infinite;
+}
+.hero-decor-circle::after {
+  content: '';
+  position: absolute; inset: 30px; border-radius: 50%;
+  border: 2px dashed rgba(212, 160, 23, 0.2);
+}
+@keyframes spin-slow { to { transform: rotate(360deg); } }
 
 .hero-left {
-  display: flex; flex-direction: column;
-  justify-content: center; padding: 4rem 3rem 4rem 0;
-  position: relative; z-index: 2;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 5rem 3rem 5rem 1rem; position: relative; z-index: 2;
 }
 
-.hero-eyebrow {
+.hero-tag {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  font-family: 'Syne', sans-serif; font-size: 0.75rem;
-  font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 1.5rem;
+  background: var(--verde); color: var(--lima2);
+  font-family: 'Unbounded', sans-serif; font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; padding: 0.45rem 1rem;
+  border-radius: 50px; width: fit-content; margin-bottom: 2rem;
+  animation: tag-pulse 2.5s ease-in-out infinite;
 }
-.hero-eyebrow::before {
-  content: '';
-  display: block; width: 28px; height: 2px; background: var(--gold);
+@keyframes tag-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(29, 168, 74, 0); }
+  50% { box-shadow: 0 0 0 8px rgba(29, 168, 74, 0); }
 }
+.tag-dot { width: 7px; height: 7px; background: var(--lima2); border-radius: 50%; animation: blink 1.4s infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 
 .hero-headline {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(3.2rem, 5.5vw, 5.5rem);
-  font-weight: 700; line-height: 1.06;
-  color: var(--forest); margin-bottom: 1.5rem;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 5.5vw, 5.8rem);
+  font-weight: 900; line-height: 1.02;
+  color: var(--ink); margin-bottom: 1.5rem;
 }
-.hero-headline em {
-  font-style: italic; color: var(--gold);
+.hero-headline .hl-verde { color: var(--verde3); font-style: italic; }
+.hero-headline .hl-outline {
+  -webkit-text-stroke: 2px var(--verde);
+  color: transparent; font-style: normal;
 }
-.hero-headline .outline {
-  -webkit-text-stroke: 1.5px var(--forest);
-  color: transparent;
+.hero-headline .hl-mark {
+  background: var(--lima2); color: var(--ink);
+  padding: 0 8px; display: inline-block; transform: rotate(-1deg); border-radius: 3px;
 }
 
 .hero-body {
-  font-size: 1.05rem; color: #4a5c4d;
-  line-height: 1.8; max-width: 480px; margin-bottom: 2.5rem;
+  font-size: 1.05rem; color: var(--cinza); line-height: 1.85;
+  max-width: 520px; margin-bottom: 2.5rem;
 }
 
-.hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
 
-.btn-hero-primary {
-  background: var(--forest); color: var(--white);
-  font-family: 'Syne', sans-serif; font-weight: 700;
-  font-size: 0.95rem; padding: 1rem 2rem;
-  border-radius: 50px; border: none; cursor: pointer;
-  text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
+.btn-primary {
+  background: var(--verde); color: var(--lima2);
+  font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 0.72rem;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  padding: 1.1rem 2rem; border-radius: 5px; border: none;
+  cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 0.6rem;
   transition: all 0.25s;
-  box-shadow: 0 8px 32px rgba(26,74,31,0.25);
+  box-shadow: 5px 5px 0 var(--verde3);
+  position: relative; overflow: hidden;
 }
-.btn-hero-primary:hover { background: var(--moss); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(26,74,31,0.3); }
+.btn-primary::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+.btn-primary:hover::after { transform: translateX(100%); }
+.btn-primary:hover { background: var(--verde3); transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--verde); }
 
-.btn-hero-ghost {
-  color: var(--forest); font-family: 'Syne', sans-serif; font-weight: 600;
-  font-size: 0.9rem; padding: 1rem 1.5rem;
-  border: 1.5px solid rgba(26,74,31,0.25); border-radius: 50px;
+.btn-ghost {
+  color: var(--verde); font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+  font-size: 0.88rem; padding: 1.1rem 1.8rem;
+  border: 2px solid var(--verde); border-radius: 5px;
   background: transparent; cursor: pointer; text-decoration: none;
   transition: all 0.2s;
 }
-.btn-hero-ghost:hover { border-color: var(--forest); background: rgba(26,74,31,0.04); }
+.btn-ghost:hover { background: var(--verde); color: var(--lima2); }
 
-.hero-social-proof {
-  margin-top: 3rem; display: flex; align-items: center; gap: 1.5rem;
-  padding-top: 2rem; border-top: 1px solid rgba(26,74,31,0.1);
+.hero-stats {
+  margin-top: 3rem; display: flex; gap: 2.5rem; flex-wrap: wrap;
+  padding-top: 2rem; border-top: 2px solid rgba(13,92,31,0.12);
 }
-.proof-avatars {
-  display: flex;
+.stat-item { display: flex; flex-direction: column; }
+.stat-num {
+  font-family: 'Unbounded', sans-serif; font-size: 1.8rem; font-weight: 900;
+  color: var(--verde); line-height: 1;
 }
-.proof-avatar {
-  width: 38px; height: 38px; border-radius: 50%;
-  border: 2.5px solid var(--cream);
-  background: var(--moss); margin-left: -10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.8rem; font-weight: 700; color: white;
-  font-family: 'Syne', sans-serif;
-}
-.proof-avatar:first-child { margin-left: 0; }
-.proof-text { font-size: 0.85rem; color: #5a6b5c; line-height: 1.5; }
-.proof-text strong { color: var(--forest); font-weight: 600; }
+.stat-label { font-size: 0.75rem; color: var(--cinza); font-weight: 500; margin-top: 0.2rem; }
 
-/* Hero visual right */
+/* HERO RIGHT */
 .hero-right {
   display: flex; align-items: center; justify-content: center;
-  position: relative; padding: 4rem 0 4rem 2rem;
+  position: relative; padding: 4rem 1rem 4rem 2rem;
+  z-index: 2;
 }
 
-.hero-visual {
-  width: 100%; max-width: 520px;
-  background: var(--forest);
-  border-radius: 32px;
-  padding: 2rem;
-  position: relative;
-  box-shadow: 0 40px 80px rgba(14,26,16,0.3), 0 0 0 1px rgba(255,255,255,0.05) inset;
+.dashboard-mockup {
+  width: 100%; max-width: 480px;
+  background: var(--ink);
+  border-radius: 20px;
+  border: 1px solid rgba(126,216,72,0.2);
+  overflow: hidden;
+  box-shadow:
+    0 40px 80px rgba(10,26,14,0.5),
+    0 0 0 1px rgba(126,216,72,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  animation: dash-float 5s ease-in-out infinite;
+}
+@keyframes dash-float {
+  0%, 100% { transform: translateY(0) rotate(0.3deg); }
+  50% { transform: translateY(-10px) rotate(-0.3deg); }
 }
 
-.visual-header {
-  display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;
+.dash-topbar {
+  background: rgba(255,255,255,0.03); padding: 0.9rem 1.2rem;
+  display: flex; align-items: center; gap: 0.6rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
-.visual-dots { display: flex; gap: 5px; }
-.visual-dots span {
-  width: 10px; height: 10px; border-radius: 50%;
-}
-.visual-dots span:nth-child(1) { background: #ff5f57; }
-.visual-dots span:nth-child(2) { background: #ffbd2e; }
-.visual-dots span:nth-child(3) { background: #28c940; }
-.visual-title-bar {
-  flex: 1; background: rgba(255,255,255,0.06); border-radius: 6px;
-  height: 28px; display: flex; align-items: center; justify-content: center;
-  font-size: 0.72rem; color: rgba(255,255,255,0.4); font-family: 'Syne', sans-serif;
+.dash-dots { display: flex; gap: 5px; }
+.dash-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.dash-dots span:nth-child(1) { background: #ff5f57; }
+.dash-dots span:nth-child(2) { background: #febc2e; }
+.dash-dots span:nth-child(3) { background: #28c840; }
+.dash-title {
+  flex: 1; text-align: center; font-size: 0.68rem;
+  color: rgba(255,255,255,0.3); font-family: 'Unbounded', sans-serif;
 }
 
-.visual-card {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;
-}
-.visual-card-label {
-  font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.4); font-family: 'Syne', sans-serif;
-  font-weight: 700; margin-bottom: 0.5rem;
-}
-.visual-patient-row {
-  display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.visual-patient-row:last-child { border-bottom: none; }
-.visual-avatar {
-  width: 30px; height: 30px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--sage), var(--moss));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.65rem; font-weight: 700; color: white;
-  font-family: 'Syne', sans-serif; flex-shrink: 0;
-}
-.visual-patient-info { flex: 1; }
-.visual-patient-name { font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.85); font-family: 'Syne', sans-serif; }
-.visual-patient-sub { font-size: 0.65rem; color: rgba(255,255,255,0.4); }
-.visual-badge {
-  font-size: 0.62rem; font-family: 'Syne', sans-serif; font-weight: 700;
-  padding: 0.25rem 0.6rem; border-radius: 50px;
-}
-.badge-green { background: rgba(90,154,96,0.2); color: #81c784; }
-.badge-yellow { background: rgba(200,150,26,0.2); color: #ffd54f; }
-.badge-red { background: rgba(196,75,26,0.2); color: #ff8a65; }
+.dash-body { padding: 1.3rem; }
 
-.visual-stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-top: 1rem; }
-.visual-stat {
+.dash-section-title {
+  font-size: 0.58rem; text-transform: uppercase; letter-spacing: 2px;
+  color: var(--lima); font-family: 'Unbounded', sans-serif; font-weight: 700;
+  margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.4rem;
+}
+.dash-section-title::before {
+  content: ''; display: block; width: 14px; height: 2px; background: var(--lima);
+}
+
+.dash-patient-card {
   background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 10px; padding: 0.75rem;
-  text-align: center;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px; padding: 0.9rem 1rem; margin-bottom: 0.6rem;
+  display: flex; align-items: center; gap: 0.8rem;
+  transition: background 0.2s;
+  animation: row-slide 0.4s both;
 }
-.visual-stat-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.5rem; font-weight: 700;
-  color: var(--gold-light);
+.dash-patient-card:nth-child(1) { animation-delay: 0.1s; }
+.dash-patient-card:nth-child(2) { animation-delay: 0.2s; }
+.dash-patient-card:nth-child(3) { animation-delay: 0.3s; }
+@keyframes row-slide {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
-.visual-stat-label { font-size: 0.58rem; color: rgba(255,255,255,0.4); font-family: 'Syne', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; }
+.dash-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--verde3), var(--lima));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 800; color: var(--ink);
+  font-family: 'Unbounded', sans-serif; flex-shrink: 0;
+}
+.dash-info { flex: 1; }
+.dash-name { font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.88); font-family: 'Space Grotesk', sans-serif; }
+.dash-sub { font-size: 0.62rem; color: rgba(255,255,255,0.35); margin-top: 2px; }
 
-.floating-pill {
-  position: absolute;
-  background: var(--white); border-radius: 50px;
-  padding: 0.6rem 1.1rem;
+/* Mini progress bar */
+.dash-progress-wrap { width: 80px; }
+.dash-progress-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+.dash-progress-fill {
+  height: 100%; border-radius: 2px;
+  animation: grow-bar 1.2s ease-out both;
+}
+@keyframes grow-bar {
+  from { width: 0 !important; }
+}
+.fill-green { background: var(--lima); }
+.fill-red { background: var(--coral2); }
+.fill-yellow { background: var(--ouro2); }
+.dash-progress-label { font-size: 0.55rem; color: rgba(255,255,255,0.4); margin-top: 3px; text-align: right; }
+
+.dash-badge {
+  font-size: 0.58rem; font-family: 'Unbounded', sans-serif; font-weight: 700;
+  padding: 0.22rem 0.6rem; border-radius: 50px; white-space: nowrap;
+}
+.badge-ok  { background: rgba(126,216,72,0.15); color: #7ed848; }
+.badge-at  { background: rgba(245,200,66,0.15); color: #f5c842; }
+.badge-no  { background: rgba(232,76,43,0.15);  color: #ff7555; }
+
+.dash-kpi-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; margin-top: 1rem;
+}
+.dash-kpi {
+  background: rgba(126,216,72,0.07); border: 1px solid rgba(126,216,72,0.12);
+  border-radius: 10px; padding: 0.8rem; text-align: center;
+}
+.dash-kpi-num {
+  font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900;
+  color: var(--ouro2); line-height: 1;
+}
+.dash-kpi-label { font-size: 0.53rem; color: rgba(255,255,255,0.35); font-family: 'Unbounded', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+.dash-ai-chip {
+  margin-top: 1rem; background: linear-gradient(135deg, rgba(61,26,120,0.4), rgba(13,79,140,0.3));
+  border: 1px solid rgba(181,240,90,0.2); border-radius: 10px;
+  padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.8rem;
+}
+.dash-ai-icon { font-size: 1.5rem; }
+.dash-ai-text { font-size: 0.7rem; color: rgba(255,255,255,0.7); line-height: 1.5; }
+.dash-ai-text strong { color: var(--lima2); font-weight: 700; }
+
+/* Floating pills */
+.float-pill {
+  position: absolute; background: var(--branco);
+  border-radius: 50px; padding: 0.55rem 1.1rem;
   display: flex; align-items: center; gap: 0.5rem;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-  font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 700;
-  color: var(--forest);
-  animation: float 4s ease-in-out infinite alternate;
+  box-shadow: 0 10px 40px rgba(10,26,14,0.2);
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.72rem; font-weight: 700;
+  color: var(--verde); white-space: nowrap;
+  border: 1.5px solid rgba(13,92,31,0.12);
 }
-.floating-pill.pill-1 {
-  top: -16px; right: -24px;
-  animation-delay: 0s;
-}
-.floating-pill.pill-2 {
-  bottom: 30px; left: -32px;
-  animation-delay: 1.5s;
-}
-@keyframes float {
-  from { transform: translateY(0px); }
-  to   { transform: translateY(-8px); }
-}
-.pill-dot { width: 8px; height: 8px; border-radius: 50%; background: #28c940; }
+.float-pill .pdot { width: 8px; height: 8px; border-radius: 50%; background: var(--lima); animation: blink 1.4s infinite; }
+.float-pill.p1 { top: 4%; right: -18px; animation: fl1 5s ease-in-out infinite; }
+.float-pill.p2 { bottom: 15%; left: -28px; animation: fl2 4s ease-in-out infinite; }
+@keyframes fl1 { 0%,100% { transform: translateY(0) rotate(1deg); } 50% { transform: translateY(-8px) rotate(-1deg); } }
+@keyframes fl2 { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(8px) rotate(1deg); } }
 
-/* ─── BENTO FEATURES ─── */
-.bento { padding: 6rem 4rem; }
-
-.section-label {
-  font-family: 'Syne', sans-serif; font-size: 0.72rem;
-  font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
-  color: var(--moss); margin-bottom: 1rem;
+/* ─── MARQUEE STRIP ─── */
+.marquee-strip {
+  background: var(--verde); color: var(--lima2); overflow: hidden;
+  padding: 0.9rem 0; border-top: 2px solid var(--lima); border-bottom: 2px solid var(--lima);
+  position: relative; z-index: 10;
 }
-.section-headline {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.5rem, 4vw, 4rem); font-weight: 700;
-  color: var(--forest); line-height: 1.1; margin-bottom: 1rem;
+.marquee-track {
+  display: flex; gap: 0; width: max-content;
+  animation: marquee 25s linear infinite;
 }
-.section-headline em { font-style: italic; color: var(--gold); }
+.marquee-track:hover { animation-play-state: paused; }
+.marquee-item {
+  font-family: 'Unbounded', sans-serif; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 0 2.5rem;
+  display: flex; align-items: center; gap: 0.7rem; white-space: nowrap;
+}
+.marquee-sep { color: var(--verde3); font-size: 1rem; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-.bento-grid {
+/* ─── SECOES COMUNS ─── */
+.section-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: 'Unbounded', sans-serif; font-size: 0.58rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--verde3); margin-bottom: 1rem;
+}
+.section-badge::before {
+  content: ''; display: block; width: 24px; height: 3px;
+  background: var(--verde3); border-radius: 2px;
+}
+.section-h {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 900; line-height: 1.08; color: var(--ink);
+}
+.section-h em { font-style: italic; color: var(--verde3); }
+.section-h .sh-outline {
+  -webkit-text-stroke: 2px var(--ink); color: transparent;
+}
+.section-h .sh-mark {
+  background: var(--lima2); color: var(--ink); padding: 0 8px;
+  display: inline; border-radius: 3px;
+}
+
+/* ─── FEATURES MAXIMALISTAS ─── */
+.features { padding: 7rem 3rem; background: var(--creme); position: relative; overflow: hidden; }
+.features-hdr { max-width: 600px; margin-bottom: 4rem; }
+
+.features-bg-text {
+  position: absolute; top: -20px; right: -20px; pointer-events: none;
+  font-family: 'Unbounded', sans-serif; font-size: 14rem; font-weight: 900;
+  color: rgba(13,92,31,0.03); line-height: 1; white-space: nowrap; user-select: none;
+  z-index: 0;
+}
+
+.feat-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: auto;
-  gap: 1rem; margin-top: 3rem;
+  grid-auto-rows: minmax(200px, auto);
+  gap: 1.2rem; position: relative; z-index: 1;
 }
 
-.bento-cell {
-  border-radius: 24px;
-  padding: 2rem;
-  position: relative; overflow: hidden;
-  transition: transform 0.3s;
-}
-.bento-cell:hover { transform: translateY(-4px); }
+/* Células */
+.fc { border-radius: 20px; padding: 2.2rem; position: relative; overflow: hidden; transition: all 0.35s; }
+.fc:hover { transform: translateY(-5px); }
 
-.bento-cell.big { grid-column: span 7; grid-row: span 2; background: var(--forest); color: white; padding: 2.5rem; }
-.bento-cell.med { grid-column: span 5; background: var(--white); }
-.bento-cell.med2 { grid-column: span 5; background: var(--gold-light); }
-.bento-cell.full-5 { grid-column: span 5; background: var(--ink); color: white; }
-.bento-cell.sm1 { grid-column: span 4; background: var(--white); }
-.bento-cell.sm2 { grid-column: span 4; background: var(--mint); }
-.bento-cell.sm3 { grid-column: span 4; background: var(--white); }
+.fc-1  { grid-column: span 7; grid-row: span 2; background: var(--verde); color: var(--branco); }
+.fc-2  { grid-column: span 5; background: var(--creme2); border: 2px solid rgba(13,92,31,0.1); }
+.fc-3  { grid-column: span 5; background: var(--lima2); }
+.fc-4  { grid-column: span 4; background: var(--ink); color: var(--branco); }
+.fc-5  { grid-column: span 4; background: var(--branco); border: 2px solid rgba(13,92,31,0.1); }
+.fc-6  { grid-column: span 4; background: var(--coral2); color: var(--branco); }
+.fc-7  { grid-column: span 6; background: var(--ouro); color: var(--branco); }
+.fc-8  { grid-column: span 6; background: var(--creme2); border: 2px solid rgba(13,92,31,0.08); }
 
-.bento-icon {
-  font-size: 2.2rem; margin-bottom: 1rem; display: block;
+.fc-icon { font-size: 2.8rem; margin-bottom: 1rem; display: block; line-height: 1; }
+.fc-title {
+  font-family: 'Playfair Display', serif; font-size: 1.65rem; font-weight: 900;
+  line-height: 1.2; margin-bottom: 0.75rem;
 }
-.bento-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.6rem; font-weight: 700; line-height: 1.2;
-  margin-bottom: 0.75rem;
+.fc-1 .fc-title { font-size: 2.3rem; color: white; }
+.fc-body { font-size: 0.88rem; line-height: 1.8; opacity: 0.78; }
+.fc-1 .fc-body { color: rgba(255,255,255,0.72); font-size: 0.95rem; opacity: 1; }
+.fc-num {
+  font-family: 'Unbounded', sans-serif; font-size: 4.5rem; font-weight: 900;
+  line-height: 1; color: var(--lima2); margin-top: 1.5rem;
 }
-.bento-cell.big .bento-title { font-size: 2.2rem; color: white; }
-.bento-cell.ink .bento-title { color: white; }
-.bento-body { font-size: 0.88rem; line-height: 1.75; opacity: 0.75; }
-.bento-cell.big .bento-body { color: rgba(255,255,255,0.7); font-size: 0.95rem; }
-
-.bento-big-number {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 5rem; font-weight: 700; color: var(--gold-light);
-  line-height: 1; margin-top: auto;
+.fc-num-label {
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.7rem;
+  color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px;
 }
-.bento-big-sublabel {
-  font-family: 'Syne', sans-serif; font-size: 0.72rem;
-  color: rgba(255,255,255,0.4); letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.bento-cell.big::after {
+.fc-1::before {
   content: '';
-  position: absolute; bottom: -40px; right: -40px;
-  width: 200px; height: 200px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(200,150,26,0.15) 0%, transparent 70%);
+  position: absolute; bottom: -60px; right: -60px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(126,216,72,0.15) 0%, transparent 70%);
   pointer-events: none;
 }
-
-.bento-chip {
+.fc-chip {
   display: inline-flex; align-items: center; gap: 0.4rem;
-  font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 700;
-  background: rgba(26,74,31,0.1); color: var(--forest);
-  padding: 0.3rem 0.8rem; border-radius: 50px;
-  text-transform: uppercase; letter-spacing: 0.5px;
-  margin-bottom: 0.75rem;
+  background: rgba(126,216,72,0.15); color: var(--lima);
+  font-family: 'Unbounded', sans-serif; font-size: 0.6rem; font-weight: 700;
+  padding: 0.3rem 0.8rem; border-radius: 50px; text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 0.8rem;
 }
 
-/* ─── HOW IT WORKS ─── */
-.how { padding: 5rem 4rem; background: var(--forest); }
+/* Barra de nutrientes */
+.nutrient-bar { margin: 1rem 0; }
+.nt-row { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem; }
+.nt-label { font-size: 0.68rem; font-family: 'Unbounded', sans-serif; font-weight: 700; width: 80px; color: var(--ink); }
+.nt-track { flex: 1; height: 8px; background: rgba(13,92,31,0.1); border-radius: 4px; overflow: hidden; }
+.nt-fill { height: 100%; border-radius: 4px; }
+.nf-prot { background: var(--verde3); }
+.nf-carb { background: var(--ouro); }
+.nf-gord { background: var(--coral2); }
+.nt-val { font-size: 0.68rem; font-weight: 700; color: var(--cinza); width: 35px; text-align: right; }
 
-.how-label { color: rgba(255,255,255,0.5); }
-.how .section-headline { color: white; }
-
-.steps {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 2rem; margin-top: 4rem; position: relative;
+/* ─── COMO FUNCIONA ─── */
+.how {
+  padding: 7rem 3rem;
+  background: var(--ink);
+  position: relative; overflow: hidden;
 }
-.steps::before {
+.how::before {
   content: '';
-  position: absolute; top: 2.5rem; left: 10%; right: 10%;
-  height: 1px; background: rgba(255,255,255,0.1);
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(29,168,74,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 30%, rgba(126,216,72,0.05) 0%, transparent 40%);
   pointer-events: none;
 }
-.step { position: relative; }
-.step-num {
-  width: 48px; height: 48px; border-radius: 50%;
-  background: rgba(200,150,26,0.15); border: 1.5px solid var(--gold);
+.how .section-badge { color: var(--lima); }
+.how .section-badge::before { background: var(--lima); }
+.how .section-h { color: var(--branco); }
+.how .section-h em { color: var(--lima2); }
+
+.how-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0; margin-top: 4.5rem; position: relative;
+}
+.how-grid::before {
+  content: '';
+  position: absolute; top: 36px; left: 12%; right: 12%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--verde) 0%, var(--lima) 50%, var(--verde) 100%);
+  background-size: 200% 100%;
+  animation: line-move 3s linear infinite;
+}
+@keyframes line-move { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
+
+.step-card {
+  padding: 0 2rem; text-align: center; position: relative;
+}
+.step-num-circle {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--verde); border: 3px solid var(--lima);
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700;
-  color: var(--gold-light); margin-bottom: 1.5rem; position: relative; z-index: 1;
+  font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900;
+  color: var(--lima2); margin: 0 auto 1.5rem;
+  position: relative; z-index: 2;
+  box-shadow: 0 0 30px rgba(126,216,72,0.2);
 }
 .step-title {
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
-  color: white; margin-bottom: 0.5rem;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.95rem;
+  color: var(--branco); margin-bottom: 0.7rem; line-height: 1.4;
 }
-.step-body { font-size: 0.85rem; color: rgba(255,255,255,0.55); line-height: 1.75; }
+.step-body { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.75; }
 
-/* ─── PRICING ─── */
-.pricing { padding: 6rem 4rem; }
+/* ─── PROVA SOCIAL / STATS ─── */
+.social-proof {
+  padding: 6rem 3rem;
+  background: var(--verde);
+  position: relative; overflow: hidden;
+}
+.social-proof::before {
+  content: 'SAÚDE';
+  position: absolute; bottom: -60px; left: -20px;
+  font-family: 'Unbounded', sans-serif; font-size: 18rem; font-weight: 900;
+  color: rgba(255,255,255,0.03); pointer-events: none; line-height: 1; user-select: none;
+}
+.sp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-top: 3rem; }
+.sp-card {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(126,216,72,0.15);
+  border-radius: 16px; padding: 2rem; text-align: center;
+  transition: all 0.3s; cursor: default;
+}
+.sp-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px); }
+.sp-num {
+  font-family: 'Unbounded', sans-serif; font-size: 2.8rem; font-weight: 900;
+  color: var(--lima2); line-height: 1;
+  animation: count-up 2s ease-out both;
+}
+.sp-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 0.5rem; line-height: 1.5; }
 
-.pricing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
+/* ─── PREÇOS ─── */
+.pricing { padding: 7rem 3rem; background: var(--creme); position: relative; }
+.pricing-hdr { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
+
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
 
 .plan-card {
-  border-radius: 24px; padding: 2.5rem;
-  border: 1.5px solid rgba(26,74,31,0.1);
-  background: var(--white); position: relative;
-  transition: transform 0.3s, box-shadow 0.3s;
+  border-radius: 20px; padding: 2.8rem 2.5rem;
+  border: 2px solid rgba(13,92,31,0.1);
+  background: var(--branco); position: relative;
+  transition: all 0.3s;
 }
-.plan-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(26,74,31,0.12); }
+.plan-card:hover { transform: translateY(-8px); box-shadow: 0 24px 60px rgba(13,92,31,0.15); }
 .plan-card.featured {
-  background: var(--forest); border-color: transparent;
-  box-shadow: 0 20px 60px rgba(26,74,31,0.35);
+  background: var(--ink); border-color: var(--lima);
+  box-shadow: 0 20px 60px rgba(10,26,14,0.4), 0 0 0 1px var(--lima);
+  transform: scale(1.04);
 }
-.plan-badge {
+.plan-card.featured:hover { transform: scale(1.06) translateY(-8px); }
+.plan-featured-badge {
   position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-  background: var(--gold); color: var(--ink);
-  font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 800;
-  letter-spacing: 1px; text-transform: uppercase;
-  padding: 0.3rem 1rem; border-radius: 50px;
+  background: var(--lima2); color: var(--ink);
+  font-family: 'Unbounded', sans-serif; font-size: 0.58rem; font-weight: 900;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 0.3rem 1.2rem; border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(126,216,72,0.4);
 }
 .plan-name {
-  font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700;
-  letter-spacing: 1.5px; text-transform: uppercase;
-  color: var(--moss); margin-bottom: 1rem;
+  font-family: 'Unbounded', sans-serif; font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px; color: var(--verde3); margin-bottom: 1rem;
 }
-.plan-card.featured .plan-name { color: rgba(255,255,255,0.55); }
+.plan-card.featured .plan-name { color: var(--lima); }
 .plan-price {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 3.2rem; font-weight: 700; line-height: 1;
-  color: var(--forest); margin-bottom: 0.25rem;
+  font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 900;
+  color: var(--ink); line-height: 1; margin-bottom: 0.3rem;
 }
-.plan-card.featured .plan-price { color: white; }
-.plan-period { font-size: 0.82rem; color: #888; margin-bottom: 1.5rem; }
-.plan-card.featured .plan-period { color: rgba(255,255,255,0.45); }
-.plan-desc { font-size: 0.85rem; color: #666; margin-bottom: 2rem; line-height: 1.7; }
-.plan-card.featured .plan-desc { color: rgba(255,255,255,0.6); }
-
-.plan-features { list-style: none; margin-bottom: 2rem; }
+.plan-card.featured .plan-price { color: var(--branco); }
+.plan-period { font-size: 0.8rem; color: var(--cinza); margin-bottom: 1.5rem; }
+.plan-card.featured .plan-period { color: rgba(255,255,255,0.4); }
+.plan-desc { font-size: 0.85rem; color: var(--cinza); margin-bottom: 2rem; line-height: 1.75; }
+.plan-card.featured .plan-desc { color: rgba(255,255,255,0.55); }
+.plan-features { list-style: none; margin-bottom: 2.5rem; display: flex; flex-direction: column; gap: 0.7rem; }
 .plan-features li {
-  display: flex; align-items: flex-start; gap: 0.6rem;
-  font-size: 0.85rem; padding: 0.45rem 0;
-  color: #444; line-height: 1.5;
+  font-size: 0.85rem; display: flex; align-items: flex-start; gap: 0.6rem;
+  color: var(--cinza);
 }
-.plan-card.featured .plan-features li { color: rgba(255,255,255,0.75); }
-.plan-check { color: var(--moss); font-size: 0.9rem; flex-shrink: 0; margin-top: 0.1rem; }
-.plan-card.featured .plan-check { color: var(--gold-light); }
-
+.plan-card.featured .plan-features li { color: rgba(255,255,255,0.7); }
+.plan-check {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--verde); color: var(--lima2);
+  font-size: 0.65rem; font-weight: 900;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.plan-card.featured .plan-check { background: var(--lima); color: var(--ink); }
 .btn-plan {
-  width: 100%; padding: 0.95rem;
-  border-radius: 50px; border: 1.5px solid var(--forest);
-  background: transparent; color: var(--forest);
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
-  cursor: pointer; transition: all 0.2s;
+  width: 100%; padding: 1rem; border-radius: 8px; border: 2px solid var(--verde);
+  background: transparent; color: var(--verde);
+  font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 0.7rem;
+  text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.2s;
 }
-.btn-plan:hover { background: var(--forest); color: white; }
+.btn-plan:hover { background: var(--verde); color: var(--lima2); }
 .plan-card.featured .btn-plan {
-  background: var(--gold); color: var(--ink); border-color: var(--gold);
+  background: var(--lima2); color: var(--ink); border-color: var(--lima2);
 }
-.plan-card.featured .btn-plan:hover { background: var(--gold-light); }
+.plan-card.featured .btn-plan:hover { background: var(--branco); border-color: var(--branco); }
 
-/* ─── TESTIMONIALS ─── */
-.testimonials { padding: 5rem 4rem; background: var(--warm); }
-.testi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
+/* ─── DEPOIMENTOS ─── */
+.testi { padding: 7rem 3rem; background: var(--creme2); position: relative; overflow: hidden; }
+.testi::after {
+  content: '★★★★★';
+  position: absolute; bottom: -80px; right: -30px;
+  font-size: 18rem; color: rgba(13,92,31,0.04); pointer-events: none; user-select: none;
+  line-height: 1;
+}
+.testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem; }
 .testi-card {
-  background: var(--white); border-radius: 20px;
-  padding: 2rem; border: 1px solid rgba(26,74,31,0.06);
+  background: var(--branco); border-radius: 20px; padding: 2.2rem;
+  border: 2px solid rgba(13,92,31,0.06);
+  transition: all 0.3s; position: relative; overflow: hidden;
 }
-.testi-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 2px; }
-.testi-text {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.1rem; font-style: italic; line-height: 1.7;
-  color: var(--forest); margin-bottom: 1.5rem;
+.testi-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(13,92,31,0.1); border-color: var(--verde3); }
+.testi-card::before {
+  content: '"';
+  position: absolute; top: -10px; right: 20px;
+  font-family: 'Playfair Display', serif; font-size: 9rem; font-weight: 900;
+  color: rgba(13,92,31,0.06); line-height: 1; pointer-events: none;
 }
-.testi-author { display: flex; align-items: center; gap: 0.75rem; }
-.testi-avatar {
-  width: 40px; height: 40px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--sage), var(--moss));
+.testi-stars { color: var(--ouro); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 2px; }
+.testi-text { font-size: 0.9rem; color: var(--cinza); line-height: 1.85; margin-bottom: 1.8rem; font-style: italic; }
+.testi-author { display: flex; align-items: center; gap: 0.9rem; }
+.testi-av {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--verde3), var(--lima));
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif; font-weight: 700;
-  font-size: 0.75rem; color: white;
+  font-size: 0.75rem; font-weight: 800; color: var(--ink);
+  font-family: 'Unbounded', sans-serif; flex-shrink: 0;
 }
-.testi-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--forest); }
-.testi-role { font-size: 0.75rem; color: #888; }
+.testi-name { font-weight: 700; font-size: 0.88rem; color: var(--ink); }
+.testi-role { font-size: 0.75rem; color: var(--cinza); }
 
 /* ─── FAQ ─── */
-.faq { padding: 5rem 4rem; max-width: 780px; margin: 0 auto; }
-.faq-title { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 700; color: var(--forest); margin-bottom: 2.5rem; text-align: center; }
-.faq-item { border-bottom: 1px solid rgba(26,74,31,0.08); }
-.faq-q {
-  width: 100%; text-align: left; background: none; border: none;
-  padding: 1.2rem 0; cursor: pointer;
-  font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.95rem;
-  color: var(--forest); display: flex; justify-content: space-between; align-items: center;
+.faq-section { padding: 6rem 3rem; background: var(--ink); }
+.faq-section .section-badge { color: var(--lima); }
+.faq-section .section-badge::before { background: var(--lima); }
+.faq-section .section-h { color: var(--branco); margin-bottom: 3rem; }
+
+.faq-list { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.8rem; }
+.faq-item {
+  border-radius: 12px; overflow: hidden;
+  border: 1px solid rgba(126,216,72,0.12);
+  background: rgba(255,255,255,0.03);
 }
-.faq-q .arrow { transition: transform 0.3s; font-size: 0.8rem; }
-.faq-q.open .arrow { transform: rotate(180deg); }
-.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-.faq-a-inner { padding-bottom: 1.2rem; font-size: 0.88rem; color: #5a6b5c; line-height: 1.8; }
+.faq-btn {
+  width: 100%; padding: 1.3rem 1.5rem; background: transparent; border: none;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.92rem; font-weight: 600;
+  color: var(--branco); text-align: left; cursor: pointer; transition: color 0.2s;
+}
+.faq-btn:hover { color: var(--lima2); }
+.faq-arrow {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(126,216,72,0.1); border: 1px solid rgba(126,216,72,0.2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--lima); font-size: 0.8rem; transition: transform 0.3s;
+}
+.faq-btn.open .faq-arrow { transform: rotate(180deg); background: var(--verde); }
+.faq-ans {
+  max-height: 0; overflow: hidden; transition: max-height 0.35s ease;
+  padding: 0 1.5rem;
+}
+.faq-ans-inner {
+  padding-bottom: 1.3rem; font-size: 0.87rem;
+  color: rgba(255,255,255,0.5); line-height: 1.85;
+}
 
 /* ─── CTA FINAL ─── */
 .cta-final {
-  padding: 7rem 4rem; text-align: center;
-  background: var(--forest);
-  position: relative; overflow: hidden;
+  padding: 8rem 3rem;
+  background: var(--creme);
+  text-align: center; position: relative; overflow: hidden;
 }
-.cta-final::before {
-  content: '';
-  position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+.cta-final-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, rgba(126,216,72,0.1) 0%, transparent 70%);
+}
+.cta-final-deco {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: 600px; height: 600px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(200,150,26,0.12) 0%, transparent 70%);
-  pointer-events: none;
+  border: 2px solid rgba(13,92,31,0.06); pointer-events: none;
+  animation: spin-slow 40s linear infinite;
 }
-.cta-final-headline {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700;
-  color: white; line-height: 1.1; margin-bottom: 1.5rem;
-  position: relative; z-index: 1;
+.cta-final-deco::after {
+  content: '';
+  position: absolute; inset: 40px; border-radius: 50%;
+  border: 1px dashed rgba(212,160,23,0.1);
 }
-.cta-final-headline em { font-style: italic; color: var(--gold-light); }
-.cta-final-sub {
-  font-size: 1rem; color: rgba(255,255,255,0.6);
-  max-width: 500px; margin: 0 auto 2.5rem;
-  line-height: 1.8; position: relative; z-index: 1;
+.cta-final-tag {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(126,216,72,0.12); border: 1px solid rgba(126,216,72,0.3);
+  color: var(--verde3); font-family: 'Unbounded', sans-serif; font-size: 0.6rem;
+  font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  padding: 0.4rem 1rem; border-radius: 50px; margin-bottom: 2rem;
 }
-.cta-final-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
-
-.btn-final {
-  background: var(--gold); color: var(--ink);
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem;
-  padding: 1.1rem 2.5rem; border-radius: 50px; border: none;
-  cursor: pointer; text-decoration: none;
-  transition: all 0.25s;
-  box-shadow: 0 8px 32px rgba(200,150,26,0.4);
+.cta-final-h {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.8rem, 5vw, 5rem);
+  font-weight: 900; line-height: 1.08; color: var(--ink);
+  max-width: 720px; margin: 0 auto 1.5rem;
 }
-.btn-final:hover { background: var(--gold-light); transform: translateY(-3px); box-shadow: 0 16px 48px rgba(200,150,26,0.5); }
-
-.btn-final-ghost {
-  background: transparent; color: rgba(255,255,255,0.75);
-  font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.95rem;
-  padding: 1.1rem 2rem; border-radius: 50px;
-  border: 1.5px solid rgba(255,255,255,0.2);
-  cursor: pointer; text-decoration: none; transition: all 0.2s;
-}
-.btn-final-ghost:hover { border-color: rgba(255,255,255,0.5); color: white; }
+.cta-final-h em { color: var(--verde3); font-style: italic; }
+.cta-final-sub { font-size: 1rem; color: var(--cinza); line-height: 1.8; max-width: 500px; margin: 0 auto 3rem; }
+.cta-final-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
 /* ─── FOOTER ─── */
 footer {
-  background: var(--ink); color: rgba(255,255,255,0.45);
-  padding: 3rem 4rem;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 1.5rem;
+  background: var(--ink); padding: 3rem;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  gap: 1.5rem; border-top: 2px solid var(--verde);
 }
 .footer-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.4rem; font-weight: 700; font-style: italic;
-  color: rgba(255,255,255,0.7);
+  font-family: 'Unbounded', sans-serif; font-size: 1.1rem; font-weight: 900;
+  color: var(--branco); letter-spacing: -1px;
 }
-.footer-logo span { color: var(--gold); }
-.footer-links { display: flex; gap: 2rem; }
-.footer-links a { font-size: 0.8rem; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; font-family: 'Syne', sans-serif; }
-.footer-links a:hover { color: rgba(255,255,255,0.7); }
-.footer-copy { font-size: 0.75rem; }
-
-/* ─── FADE-IN ANIMATION ─── */
-.fade-in {
-  opacity: 0; transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+.footer-logo .ia { background: var(--verde); color: var(--lima2); padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+.footer-links { display: flex; gap: 2rem; flex-wrap: wrap; }
+.footer-links a {
+  font-size: 0.8rem; color: rgba(255,255,255,0.4); text-decoration: none;
+  transition: color 0.2s;
 }
-.fade-in.visible { opacity: 1; transform: translateY(0); }
+.footer-links a:hover { color: var(--lima2); }
+.footer-copy { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
 
-/* ─── RESPONSIVE ─── */
-@media (max-width: 960px) {
-  nav { padding: 1rem 2rem; }
-  .nav-links { gap: 1.5rem; }
-  .hero { grid-template-columns: 1fr; padding: 2rem; padding-top: 80px; }
-  .hero-left { padding: 3rem 0; }
-  .hero-right { display: none; }
-  .bento { padding: 4rem 2rem; }
-  .bento-grid { grid-template-columns: 1fr 1fr; }
-  .bento-cell.big { grid-column: span 2; }
-  .bento-cell.med, .bento-cell.med2, .bento-cell.full-5 { grid-column: span 1; }
-  .bento-cell.sm1, .bento-cell.sm2, .bento-cell.sm3 { grid-column: span 1; }
-  .how { padding: 4rem 2rem; }
-  .steps { grid-template-columns: 1fr 1fr; }
-  .pricing { padding: 4rem 2rem; }
-  .pricing-grid { grid-template-columns: 1fr; }
-  .testimonials { padding: 4rem 2rem; }
+/* ─── ANIMAÇÕES DE SCROLL ─── */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+.reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+/* ─── MOBILE RESPONSIVE ─── */
+@media (max-width: 1024px) {
+  .feat-grid { grid-template-columns: 1fr 1fr; }
+  .fc-1 { grid-column: span 2; }
+  .fc-2, .fc-3 { grid-column: span 1; }
+  .fc-4, .fc-5, .fc-6 { grid-column: span 1; }
+  .fc-7, .fc-8 { grid-column: span 1; }
+
+  .how-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+  .how-grid::before { display: none; }
+
+  .sp-grid { grid-template-columns: repeat(2, 1fr); }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 440px; }
+  .plan-card.featured { transform: scale(1); }
   .testi-grid { grid-template-columns: 1fr; }
-  .faq { padding: 4rem 2rem; }
-  .cta-final { padding: 5rem 2rem; }
-  footer { padding: 2rem; flex-direction: column; text-align: center; }
-  .footer-links { flex-wrap: wrap; justify-content: center; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  nav.scrolled { padding: 0.7rem 1.5rem; }
+  .nav-links { display: none; }
+  .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+
+  .hero {
+    grid-template-columns: 1fr; padding: 0 1.5rem; padding-top: 72px;
+  }
+  .hero-left { padding: 3rem 0 1rem; }
+  .hero-right { padding: 1.5rem 0 3rem; }
+  .hero-bg-blob { display: none; }
+  .hero-decor-circle { display: none; }
+  .float-pill.p1 { right: -10px; top: 2%; font-size: 0.65rem; padding: 0.45rem 0.8rem; }
+  .float-pill.p2 { display: none; }
+  .hero-stats { gap: 1.5rem; }
+  .stat-num { font-size: 1.4rem; }
+
+  .marquee-item { font-size: 0.65rem; padding: 0 1.5rem; }
+
+  .features { padding: 5rem 1.5rem; }
+  .features-bg-text { display: none; }
+  .feat-grid { grid-template-columns: 1fr; }
+  .fc-1, .fc-2, .fc-3, .fc-4, .fc-5, .fc-6, .fc-7, .fc-8 { grid-column: span 1; grid-row: span 1; }
+
+  .how { padding: 5rem 1.5rem; }
+  .how-grid { grid-template-columns: 1fr; gap: 2rem; }
+
+  .social-proof { padding: 4rem 1.5rem; }
+  .sp-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .sp-num { font-size: 2rem; }
+
+  .pricing { padding: 5rem 1.5rem; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 100%; }
+  .plan-card.featured { transform: scale(1); }
+
+  .testi { padding: 5rem 1.5rem; }
+  .testi-grid { grid-template-columns: 1fr; }
+
+  .faq-section { padding: 4rem 1.5rem; }
+
+  .cta-final { padding: 5rem 1.5rem; }
+  .cta-final-deco { display: none; }
+
+  footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+  .footer-links { gap: 1rem; }
+
+  .section-h { font-size: clamp(2rem, 7vw, 3rem); }
+}
+
+@media (max-width: 480px) {
+  .hero-headline { font-size: clamp(2.4rem, 9vw, 3.2rem); }
+  .btn-primary, .btn-ghost { font-size: 0.65rem; padding: 0.9rem 1.4rem; }
+  .sp-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">Calor<span>IA</span> Verde</div>
+<!-- CURSOR CUSTOMIZADO -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <span class="mobile-close" id="mobileClose">✕</span>
+  <a href="#funcionalidades" onclick="closeMobileMenu()">Funcionalidades</a>
+  <a href="#como-funciona" onclick="closeMobileMenu()">Como funciona</a>
+  <a href="#planos" onclick="closeMobileMenu()">Planos</a>
+  <a href="#faq" onclick="closeMobileMenu()">FAQ</a>
+  <a href="#planos" class="btn-primary" onclick="closeMobileMenu()" style="margin-top:1rem;">Começar agora ↗</a>
+</div>
+
+<!-- ─── NAV ─── -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">Calor<span class="logo-ia">IA</span> Verde</a>
   <div class="nav-links">
     <a href="#funcionalidades">Funcionalidades</a>
+    <a href="#como-funciona">Como funciona</a>
     <a href="#planos">Planos</a>
     <a href="#faq">FAQ</a>
-    <a href="https://celadon-llama-666ed4.netlify.app/#app" class="nav-cta" target="_blank">Testar grátis →</a>
+  </div>
+  <a href="#planos" class="nav-cta">Começar grátis ↗</a>
+  <div class="nav-hamburger" id="hamburger">
+    <span></span><span></span><span></span>
   </div>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-left fade-in">
-    <div class="hero-eyebrow">Para Nutricionistas & Personal Trainers</div>
-    <h1 class="hero-headline">
-      Seus pacientes.<br>
-      <em>Acompanhados</em><br>
-      de verdade.
-    </h1>
-    <p class="hero-body">
-      CalorIA Verde é a plataforma de nutrição inteligente que você indica aos seus pacientes — e ainda gerencia o progresso de todos em um só painel.
-    </p>
-    <div class="hero-actions">
-      <a href="#planos" class="btn-hero-primary">Começar agora ↗</a>
-      <a href="https://celadon-llama-666ed4.netlify.app/#app" class="btn-hero-ghost" target="_blank">Ver demonstração</a>
+<!-- ─── HERO ─── -->
+<section class="hero" id="home">
+  <div class="hero-bg-blob"></div>
+  <div class="hero-bg-lines"></div>
+  <div class="hero-decor-circle"></div>
+
+  <div class="hero-left">
+    <div class="hero-tag reveal" style="transition-delay:0.1s">
+      <span class="tag-dot"></span>
+      Plataforma Nutricional com IA — Lançamento 2025
     </div>
-    <div class="hero-social-proof">
-      <div class="proof-avatars">
-        <div class="proof-avatar">MR</div>
-        <div class="proof-avatar">TL</div>
-        <div class="proof-avatar">CA</div>
-        <div class="proof-avatar">+</div>
+    <h1 class="hero-headline reveal" style="transition-delay:0.2s">
+      Nutrição<br>
+      <span class="hl-verde">inteligente</span><br>
+      para <span class="hl-mark">profissionais</span><br>
+      <span class="hl-outline">de verdade.</span>
+    </h1>
+    <p class="hero-body reveal" style="transition-delay:0.3s">
+      CalorIA Verde é a plataforma que você indica para seus pacientes — e ainda gerencia o progresso de todos em um painel unificado. IA de nutrição + acompanhamento em tempo real.
+    </p>
+    <div class="hero-actions reveal" style="transition-delay:0.4s">
+      <a href="#planos" class="btn-primary">Começar agora ↗</a>
+      <a href="https://celadon-llama-666ed4.netlify.app/#app" class="btn-ghost" target="_blank">Ver demonstração</a>
+    </div>
+    <div class="hero-stats reveal" style="transition-delay:0.5s">
+      <div class="stat-item">
+        <div class="stat-num" data-target="120">0</div>
+        <div class="stat-label">Profissionais ativos</div>
       </div>
-      <div class="proof-text">
-        <strong>+120 profissionais</strong> já usam em suas consultas<br>
-        Avaliação média 4.9 ★ entre os primeiros usuários
+      <div class="stat-item">
+        <div class="stat-num">4.9★</div>
+        <div class="stat-label">Avaliação média</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">900K+</div>
+        <div class="stat-label">Alimentos na base</div>
       </div>
     </div>
   </div>
 
-  <div class="hero-right fade-in" style="transition-delay: 0.2s;">
-    <div class="hero-visual">
-      <div class="visual-header">
-        <div class="visual-dots">
-          <span></span><span></span><span></span>
-        </div>
-        <div class="visual-title-bar">Painel do Profissional — CalorIA Verde</div>
+  <div class="hero-right reveal-right" style="transition-delay:0.25s">
+    <div class="dashboard-mockup">
+      <div class="dash-topbar">
+        <div class="dash-dots"><span></span><span></span><span></span></div>
+        <div class="dash-title">Painel do Profissional — CalorIA Verde</div>
       </div>
+      <div class="dash-body">
+        <div class="dash-section-title">Pacientes ativos hoje</div>
 
-      <div class="visual-card">
-        <div class="visual-card-label">Pacientes ativos hoje</div>
-        <div class="visual-patient-row">
-          <div class="visual-avatar">ML</div>
-          <div class="visual-patient-info">
-            <div class="visual-patient-name">Maria Lima</div>
-            <div class="visual-patient-sub">1.840 kcal · meta: 1.900</div>
+        <div class="dash-patient-card">
+          <div class="dash-avatar">ML</div>
+          <div class="dash-info">
+            <div class="dash-name">Maria Lima</div>
+            <div class="dash-sub">1.840 kcal · meta: 1.900 kcal</div>
           </div>
-          <div class="visual-badge badge-green">No alvo</div>
-        </div>
-        <div class="visual-patient-row">
-          <div class="visual-avatar">JS</div>
-          <div class="visual-patient-info">
-            <div class="visual-patient-name">João Silva</div>
-            <div class="visual-patient-sub">2.430 kcal · meta: 2.100</div>
+          <div style="flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+            <div class="dash-badge badge-ok">No alvo</div>
+            <div class="dash-progress-wrap">
+              <div class="dash-progress-bar">
+                <div class="dash-progress-fill fill-green" style="width:97%"></div>
+              </div>
+              <div class="dash-progress-label">97%</div>
+            </div>
           </div>
-          <div class="visual-badge badge-red">Acima</div>
         </div>
-        <div class="visual-patient-row">
-          <div class="visual-avatar">AC</div>
-          <div class="visual-patient-info">
-            <div class="visual-patient-name">Ana Costa</div>
-            <div class="visual-patient-sub">680 kcal · meta: 1.800</div>
-          </div>
-          <div class="visual-badge badge-yellow">Atenção</div>
-        </div>
-      </div>
 
-      <div class="visual-stats-row">
-        <div class="visual-stat">
-          <div class="visual-stat-num">14</div>
-          <div class="visual-stat-label">Pacientes</div>
+        <div class="dash-patient-card">
+          <div class="dash-avatar" style="background: linear-gradient(135deg, #e84c2b, #ff7555)">JS</div>
+          <div class="dash-info">
+            <div class="dash-name">João Silva</div>
+            <div class="dash-sub">2.430 kcal · meta: 2.100 kcal</div>
+          </div>
+          <div style="flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+            <div class="dash-badge badge-no">Acima</div>
+            <div class="dash-progress-wrap">
+              <div class="dash-progress-bar">
+                <div class="dash-progress-fill fill-red" style="width:100%"></div>
+              </div>
+              <div class="dash-progress-label">116%</div>
+            </div>
+          </div>
         </div>
-        <div class="visual-stat">
-          <div class="visual-stat-num">92%</div>
-          <div class="visual-stat-label">Adesão</div>
+
+        <div class="dash-patient-card">
+          <div class="dash-avatar" style="background: linear-gradient(135deg, #d4a017, #f5c842)">AC</div>
+          <div class="dash-info">
+            <div class="dash-name">Ana Costa</div>
+            <div class="dash-sub">680 kcal · meta: 1.800 kcal</div>
+          </div>
+          <div style="flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+            <div class="dash-badge badge-at">Atenção</div>
+            <div class="dash-progress-wrap">
+              <div class="dash-progress-bar">
+                <div class="dash-progress-fill fill-yellow" style="width:38%"></div>
+              </div>
+              <div class="dash-progress-label">38%</div>
+            </div>
+          </div>
         </div>
-        <div class="visual-stat">
-          <div class="visual-stat-num">6</div>
-          <div class="visual-stat-label">Planos ativos</div>
+
+        <div class="dash-kpi-row">
+          <div class="dash-kpi">
+            <div class="dash-kpi-num">14</div>
+            <div class="dash-kpi-label">Pacientes</div>
+          </div>
+          <div class="dash-kpi">
+            <div class="dash-kpi-num">92%</div>
+            <div class="dash-kpi-label">Adesão</div>
+          </div>
+          <div class="dash-kpi">
+            <div class="dash-kpi-num">6</div>
+            <div class="dash-kpi-label">Planos ativos</div>
+          </div>
+        </div>
+
+        <div class="dash-ai-chip">
+          <div class="dash-ai-icon">🤖</div>
+          <div class="dash-ai-text">
+            <strong>IA detectou:</strong> João Silva ultrapassou a meta calórica por 3 dias seguidos. Recomendação automática gerada.
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="floating-pill pill-1">
-      <div class="pill-dot"></div>
-      IA analisa alimentos por foto
+    <div class="float-pill p1">
+      <div class="pdot"></div>
+      IA analisa por foto 📷
     </div>
-    <div class="floating-pill pill-2">
-      <div class="pill-dot"></div>
-      Diário sincronizado em tempo real
+    <div class="float-pill p2">
+      <div class="pdot"></div>
+      Diário em tempo real 🔄
     </div>
   </div>
 </section>
 
-<!-- BENTO FEATURES -->
-<section class="bento" id="funcionalidades">
-  <div class="section-label fade-in">Funcionalidades</div>
-  <h2 class="section-headline fade-in">
-    Tudo que o profissional<br>
-    <em>precisa</em> em um lugar só.
+<!-- ─── MARQUEE ─── -->
+<div class="marquee-strip">
+  <div class="marquee-track" id="marqueeTrack">
+    <div class="marquee-item"><span>📸</span> Câmera IA <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>🥦</span> 900K+ Alimentos <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>📊</span> Painel do Profissional <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>⚡</span> Cálculo de TMB e TDEE <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>🥗</span> Receitas saudáveis <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>🔒</span> LGPD compliant <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>📱</span> 100% responsivo <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>🏥</span> Ideal para clínicas <span class="marquee-sep">◆</span></div>
+    <!-- duplicado para loop infinito -->
+    <div class="marquee-item"><span>📸</span> Câmera IA <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>🥦</span> 900K+ Alimentos <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>📊</span> Painel do Profissional <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>⚡</span> Cálculo de TMB e TDEE <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>🥗</span> Receitas saudáveis <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>🔒</span> LGPD compliant <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>📱</span> 100% responsivo <span class="marquee-sep">◆</span></div>
+    <div class="marquee-item"><span>🏥</span> Ideal para clínicas <span class="marquee-sep">◆</span></div>
+  </div>
+</div>
+
+<!-- ─── FEATURES ─── -->
+<section class="features" id="funcionalidades">
+  <div class="features-bg-text">NUTRIÇÃO</div>
+  <div class="features-hdr">
+    <div class="section-badge reveal">Funcionalidades</div>
+    <h2 class="section-h reveal">
+      Tudo que o profissional<br>
+      <em>precisa</em> em um lugar só.
+    </h2>
+  </div>
+
+  <div class="feat-grid">
+    <div class="fc fc-1 reveal-left">
+      <div class="fc-chip">⭐ Destaque principal</div>
+      <div class="fc-title">Painel de pacientes com acompanhamento em tempo real</div>
+      <p class="fc-body">Veja o diário alimentar de cada paciente, receba alertas inteligentes quando alguém ultrapassa ou fica abaixo da meta calórica, e acompanhe a evolução semanal sem precisar pedir foto por WhatsApp.</p>
+      <div>
+        <div class="fc-num">14+</div>
+        <div class="fc-num-label">pacientes por profissional</div>
+      </div>
+    </div>
+
+    <div class="fc fc-2 reveal" style="transition-delay:0.1s">
+      <span class="fc-icon">📷</span>
+      <div class="fc-title">Câmera IA identifica alimentos</div>
+      <p class="fc-body">O paciente fotografa o prato e a IA retorna automaticamente calorias, macros e informações nutricionais completas. Fim do registro manual impreciso.</p>
+    </div>
+
+    <div class="fc fc-3 reveal" style="transition-delay:0.15s">
+      <span class="fc-icon">🔍</span>
+      <div class="fc-title">Base com 900 mil+ alimentos</div>
+      <p class="fc-body">Dados TACO e USDA integrados. Busca em português com resultados por porção.</p>
+      <div class="nutrient-bar">
+        <div class="nt-row">
+          <span class="nt-label">Proteína</span>
+          <div class="nt-track"><div class="nt-fill nf-prot" style="width:62%"></div></div>
+          <span class="nt-val">26g</span>
+        </div>
+        <div class="nt-row">
+          <span class="nt-label">Carboidr.</span>
+          <div class="nt-track"><div class="nt-fill nf-carb" style="width:48%"></div></div>
+          <span class="nt-val">20g</span>
+        </div>
+        <div class="nt-row">
+          <span class="nt-label">Gordura</span>
+          <div class="nt-track"><div class="nt-fill nf-gord" style="width:30%"></div></div>
+          <span class="nt-val">12g</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc fc-4 reveal" style="transition-delay:0.05s">
+      <span class="fc-icon">⚡</span>
+      <div class="fc-title" style="color:white;">Calculadora TMB + TDEE</div>
+      <p class="fc-body" style="color:rgba(255,255,255,0.6)">Harris-Benedict com ajuste por nível de atividade. Distribui macros automaticamente para emagrecer, manter ou ganhar massa.</p>
+    </div>
+
+    <div class="fc fc-5 reveal" style="transition-delay:0.1s">
+      <span class="fc-icon">📖</span>
+      <div class="fc-title">Diário alimentar por refeição</div>
+      <p class="fc-body">Café, almoço, lanche e jantar com barra de progresso de macros em tempo real.</p>
+    </div>
+
+    <div class="fc fc-6 reveal" style="transition-delay:0.15s">
+      <span class="fc-icon">⚖️</span>
+      <div class="fc-title" style="color:white;">Comparador de alimentos</div>
+      <p class="fc-body" style="color:rgba(255,255,255,0.85)">Compare dois alimentos lado a lado em calorias, proteínas, carboidratos e gorduras.</p>
+    </div>
+
+    <div class="fc fc-7 reveal" style="transition-delay:0.05s">
+      <span class="fc-icon">🥗</span>
+      <div class="fc-title" style="color:white;">Receitas saudáveis com IA</div>
+      <p class="fc-body" style="color:rgba(255,255,255,0.8)">Receitas filtradas por objetivo: baixo em calorias, rico em proteína, low carb. Geradas e adaptadas por inteligência artificial.</p>
+    </div>
+
+    <div class="fc fc-8 reveal" style="transition-delay:0.1s">
+      <span class="fc-icon">📋</span>
+      <div class="fc-title">Planos alimentares personalizados</div>
+      <p class="fc-body">Monte e envie planos detalhados para cada paciente com um clique. Eles recebem direto no app.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── COMO FUNCIONA ─── -->
+<section class="how" id="como-funciona">
+  <div class="section-badge reveal">Como funciona</div>
+  <h2 class="section-h reveal" style="margin-top:0.5rem">
+    Em 4 passos você já está<br>
+    <em>usando com seus pacientes</em>
   </h2>
 
-  <div class="bento-grid">
-    <div class="bento-cell big fade-in">
-      <div class="bento-chip">⭐ Destaque</div>
-      <div class="bento-title">Painel de pacientes com acompanhamento em tempo real</div>
-      <p class="bento-body">Veja o diário alimentar de cada paciente, receba alertas quando alguém ultrapassa ou fica abaixo da meta calórica, e acompanhe a evolução semanal sem precisar perguntar por WhatsApp.</p>
-      <div style="margin-top: 2rem;">
-        <div class="bento-big-number">14+</div>
-        <div class="bento-big-sublabel">pacientes gerenciados por profissional</div>
-      </div>
-    </div>
-
-    <div class="bento-cell med fade-in">
-      <span class="bento-icon">📷</span>
-      <div class="bento-title">Câmera IA identifica alimentos</div>
-      <p class="bento-body">O paciente fotografa o prato e a IA retorna automaticamente calorias, macros e informações nutricionais completas. Fim do registro manual impreciso.</p>
-    </div>
-
-    <div class="bento-cell med2 fade-in">
-      <span class="bento-icon">🔍</span>
-      <div class="bento-title">Base com 900 mil+ alimentos</div>
-      <p class="bento-body">Busca rápida com dados baseados na tabela TACO e USDA. Resultados em português, ajustáveis por porção.</p>
-    </div>
-
-    <div class="bento-cell full-5 fade-in" style="background: var(--ink);">
-      <span class="bento-icon">⚡</span>
-      <div class="bento-title" style="color: white;">Calculadora metabólica (TMB + TDEE)</div>
-      <p class="bento-body" style="color: rgba(255,255,255,0.55);">Harris-Benedict com ajuste por nível de atividade. Gera automaticamente distribuição de macros para emagrecer, manter ou ganhar massa.</p>
-    </div>
-
-    <div class="bento-cell sm1 fade-in">
-      <span class="bento-icon">📖</span>
-      <div class="bento-title">Diário alimentar por refeição</div>
-      <p class="bento-body">Café, almoço, lanche e jantar registrados com barra de progresso de macros em tempo real.</p>
-    </div>
-
-    <div class="bento-cell sm2 fade-in">
-      <span class="bento-icon">⚖️</span>
-      <div class="bento-title">Comparador de alimentos</div>
-      <p class="bento-body">Compare dois alimentos lado a lado em calorias, proteínas, carboidratos e gorduras.</p>
-    </div>
-
-    <div class="bento-cell sm3 fade-in">
-      <span class="bento-icon">🥗</span>
-      <div class="bento-title">Receitas saudáveis filtradas</div>
-      <p class="bento-body">Receitas por refeição e objetivo: baixo em calorias, rico em proteína. Geradas e adaptadas por IA.</p>
-    </div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="how" id="como-funciona">
-  <div class="section-label how-label fade-in">Como funciona</div>
-  <h2 class="section-headline fade-in">Em 4 passos você já está<br><em>usando com seus pacientes</em></h2>
-
-  <div class="steps">
-    <div class="step fade-in">
-      <div class="step-num">1</div>
+  <div class="how-grid">
+    <div class="step-card reveal" style="transition-delay:0.05s">
+      <div class="step-num-circle">1</div>
       <div class="step-title">Crie sua conta de profissional</div>
-      <p class="step-body">Cadastre-se como nutricionista ou personal trainer. Leva menos de 2 minutos.</p>
+      <p class="step-body">Cadastre-se como nutricionista ou personal trainer. Menos de 2 minutos.</p>
     </div>
-    <div class="step fade-in" style="transition-delay: 0.1s;">
-      <div class="step-num">2</div>
+    <div class="step-card reveal" style="transition-delay:0.12s">
+      <div class="step-num-circle">2</div>
       <div class="step-title">Convide seus pacientes</div>
-      <p class="step-body">Envie o link pelo WhatsApp ou e-mail. O paciente cria a conta e já fica vinculado a você.</p>
+      <p class="step-body">Envie o link pelo WhatsApp. O paciente cria a conta e já fica vinculado a você.</p>
     </div>
-    <div class="step fade-in" style="transition-delay: 0.2s;">
-      <div class="step-num">3</div>
+    <div class="step-card reveal" style="transition-delay:0.2s">
+      <div class="step-num-circle">3</div>
       <div class="step-title">Configure as metas individuais</div>
-      <p class="step-body">Defina a meta calórica e de macros para cada paciente dentro do painel do profissional.</p>
+      <p class="step-body">Defina calorias e macros para cada paciente dentro do painel do profissional.</p>
     </div>
-    <div class="step fade-in" style="transition-delay: 0.3s;">
-      <div class="step-num">4</div>
+    <div class="step-card reveal" style="transition-delay:0.28s">
+      <div class="step-num-circle">4</div>
       <div class="step-title">Acompanhe em tempo real</div>
       <p class="step-body">Veja o diário de todos os pacientes, receba alertas e intervenha quando necessário.</p>
     </div>
   </div>
 </section>
 
-<!-- PRICING -->
+<!-- ─── PROVA SOCIAL ─── -->
+<section class="social-proof">
+  <div class="section-badge reveal" style="color:var(--lima2);">
+    <span style="background:var(--lima2); display:block; width:24px; height:3px; border-radius:2px;"></span>
+    Nossos números
+  </div>
+  <h2 class="section-h reveal" style="color:white; margin-top:0.5rem; margin-bottom:0;">
+    Resultados que<br><em style="color:var(--lima2)">falam por si.</em>
+  </h2>
+  <div class="sp-grid">
+    <div class="sp-card reveal" style="transition-delay:0.05s">
+      <div class="sp-num">+120</div>
+      <div class="sp-label">Profissionais de saúde ativos na plataforma</div>
+    </div>
+    <div class="sp-card reveal" style="transition-delay:0.1s">
+      <div class="sp-num">92%</div>
+      <div class="sp-label">Taxa média de adesão dos pacientes</div>
+    </div>
+    <div class="sp-card reveal" style="transition-delay:0.15s">
+      <div class="sp-num">40min</div>
+      <div class="sp-label">Economizados por dia pelos profissionais</div>
+    </div>
+    <div class="sp-card reveal" style="transition-delay:0.2s">
+      <div class="sp-num">4.9★</div>
+      <div class="sp-label">Avaliação média entre os primeiros usuários</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PREÇOS ─── -->
 <section class="pricing" id="planos">
-  <div class="section-label fade-in">Planos e preços</div>
-  <h2 class="section-headline fade-in">Simples, transparente,<br><em>sem surpresas.</em></h2>
+  <div class="pricing-hdr">
+    <div class="section-badge reveal" style="margin:0 auto 0.8rem;">Planos e preços</div>
+    <h2 class="section-h reveal">
+      Simples, transparente,<br>
+      <em>sem surpresas.</em>
+    </h2>
+    <p style="margin-top:1rem; color:var(--cinza); font-size:0.9rem;" class="reveal">14 dias de garantia no plano Profissional. Cancele quando quiser.</p>
+  </div>
 
   <div class="pricing-grid">
-    <!-- Free -->
-    <div class="plan-card fade-in">
+    <!-- Gratuito -->
+    <div class="plan-card reveal">
       <div class="plan-name">Gratuito</div>
       <div class="plan-price">R$0</div>
       <div class="plan-period">para sempre</div>
@@ -778,9 +1233,9 @@ footer {
       <button class="btn-plan">Começar grátis</button>
     </div>
 
-    <!-- Pro -->
-    <div class="plan-card featured fade-in" style="transition-delay: 0.1s;">
-      <div class="plan-badge">Mais popular</div>
+    <!-- Profissional -->
+    <div class="plan-card featured reveal" style="transition-delay:0.1s">
+      <div class="plan-featured-badge">⭐ Mais popular</div>
       <div class="plan-name">Profissional</div>
       <div class="plan-price">R$97</div>
       <div class="plan-period">por mês · cancele quando quiser</div>
@@ -791,14 +1246,13 @@ footer {
         <li><span class="plan-check">✓</span>Até 30 pacientes vinculados</li>
         <li><span class="plan-check">✓</span>Câmera IA ilimitada</li>
         <li><span class="plan-check">✓</span>Planos alimentares personalizados</li>
-        <li><span class="plan-check">✓</span>Diário sincronizado entre dispositivos</li>
         <li><span class="plan-check">✓</span>Relatórios de progresso</li>
       </ul>
       <button class="btn-plan">Assinar agora →</button>
     </div>
 
     <!-- Clínica -->
-    <div class="plan-card fade-in" style="transition-delay: 0.2s;">
+    <div class="plan-card reveal" style="transition-delay:0.2s">
       <div class="plan-name">Clínica / Consultório</div>
       <div class="plan-price">R$197</div>
       <div class="plan-period">por mês · até 3 profissionais</div>
@@ -815,46 +1269,46 @@ footer {
     </div>
   </div>
 
-  <p style="text-align: center; margin-top: 2rem; font-size: 0.82rem; color: #888;">
-    💳 Sem contrato de fidelidade. Cancele a qualquer momento. · Pagamento via PIX, cartão ou boleto.
+  <p style="text-align:center; margin-top:2.5rem; font-size:0.82rem; color:var(--cinza);" class="reveal">
+    💳 Sem contrato de fidelidade · PIX, cartão ou boleto
   </p>
 </section>
 
-<!-- TESTIMONIALS -->
-<section class="testimonials">
-  <div class="section-label fade-in" style="text-align:center;">Depoimentos</div>
-  <h2 class="section-headline fade-in" style="text-align:center;">O que os profissionais<br><em>estão dizendo.</em></h2>
-
+<!-- ─── DEPOIMENTOS ─── -->
+<section class="testi" id="depoimentos">
+  <div class="section-badge reveal">Depoimentos</div>
+  <h2 class="section-h reveal" style="margin-top:0.5rem">
+    O que os profissionais<br>
+    <em>estão dizendo.</em>
+  </h2>
   <div class="testi-grid">
-    <div class="testi-card fade-in">
+    <div class="testi-card reveal" style="transition-delay:0.05s">
       <div class="testi-stars">★★★★★</div>
       <p class="testi-text">"Meus pacientes começaram a registrar as refeições de verdade depois que comecei a usar. A câmera IA foi o diferencial — ninguém mais diz que não sabe a quantidade."</p>
       <div class="testi-author">
-        <div class="testi-avatar">MC</div>
+        <div class="testi-av">MC</div>
         <div>
           <div class="testi-name">Mariana Costa</div>
           <div class="testi-role">Nutricionista · São Paulo</div>
         </div>
       </div>
     </div>
-
-    <div class="testi-card fade-in" style="transition-delay: 0.1s;">
+    <div class="testi-card reveal" style="transition-delay:0.12s">
       <div class="testi-stars">★★★★★</div>
       <p class="testi-text">"Economizo pelo menos 40 minutos por dia que gastava pedindo print de diário por WhatsApp. O painel mostra tudo — quem registrou, quem estourou a meta, quem precisa de atenção."</p>
       <div class="testi-author">
-        <div class="testi-avatar">RF</div>
+        <div class="testi-av" style="background:linear-gradient(135deg,#e84c2b,#ff7555)">RF</div>
         <div>
           <div class="testi-name">Rafael Ferreira</div>
           <div class="testi-role">Personal Trainer · Rio de Janeiro</div>
         </div>
       </div>
     </div>
-
-    <div class="testi-card fade-in" style="transition-delay: 0.2s;">
+    <div class="testi-card reveal" style="transition-delay:0.2s">
       <div class="testi-stars">★★★★★</div>
       <p class="testi-text">"Nossa clínica tem 3 nutricionistas e o plano Clínica foi exatamente o que precisávamos. O white-label com nossa identidade visual deu um ar muito mais profissional para os pacientes."</p>
       <div class="testi-author">
-        <div class="testi-avatar">BL</div>
+        <div class="testi-av" style="background:linear-gradient(135deg,#d4a017,#f5c842);color:#0a1a0e">BL</div>
         <div>
           <div class="testi-name">Beatriz Leal</div>
           <div class="testi-role">Nutricionista · Diretora Clínica Nutrir</div>
@@ -864,83 +1318,94 @@ footer {
   </div>
 </section>
 
-<!-- FAQ -->
-<div class="faq" id="faq">
-  <h2 class="faq-title">Perguntas frequentes</h2>
+<!-- ─── FAQ ─── -->
+<section class="faq-section" id="faq">
+  <div class="section-badge reveal">FAQ</div>
+  <h2 class="section-h reveal">Perguntas<br><em>frequentes.</em></h2>
 
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">
-      Os dados dos meus pacientes ficam seguros? <span class="arrow">▼</span>
-    </button>
-    <div class="faq-a">
-      <div class="faq-a-inner">Sim. Usamos criptografia em trânsito (HTTPS) e em repouso. Os dados estão armazenados em servidores no Brasil, em conformidade com a LGPD. Nenhum dado de saúde é compartilhado com terceiros. Você pode solicitar a exclusão completa dos dados a qualquer momento.</div>
+  <div class="faq-list">
+    <div class="faq-item reveal">
+      <button class="faq-btn" onclick="toggleFaq(this)">
+        Os dados dos meus pacientes ficam seguros?
+        <span class="faq-arrow">▼</span>
+      </button>
+      <div class="faq-ans">
+        <div class="faq-ans-inner">Sim. Usamos criptografia em trânsito (HTTPS) e em repouso. Os dados estão armazenados em servidores no Brasil, em conformidade com a LGPD. Nenhum dado de saúde é compartilhado com terceiros. Você pode solicitar a exclusão completa dos dados a qualquer momento.</div>
+      </div>
     </div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">
-      O paciente precisa pagar para usar? <span class="arrow">▼</span>
-    </button>
-    <div class="faq-a">
-      <div class="faq-a-inner">Não. O paciente tem acesso gratuito à plataforma — busca nutricional, calculadora e diário alimentar. Você, como profissional, paga a assinatura e libera as funcionalidades avançadas de acompanhamento para os seus pacientes.</div>
+    <div class="faq-item reveal" style="transition-delay:0.05s">
+      <button class="faq-btn" onclick="toggleFaq(this)">
+        O paciente precisa pagar para usar?
+        <span class="faq-arrow">▼</span>
+      </button>
+      <div class="faq-ans">
+        <div class="faq-ans-inner">Não. O paciente tem acesso gratuito à plataforma — busca nutricional, calculadora e diário alimentar. Você, como profissional, paga a assinatura e libera as funcionalidades avançadas para seus pacientes.</div>
+      </div>
     </div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">
-      Posso testar antes de assinar? <span class="arrow">▼</span>
-    </button>
-    <div class="faq-a">
-      <div class="faq-a-inner">Sim! A plataforma funcional está disponível para teste gratuito no link de demonstração. O plano Profissional tem 14 dias de garantia — se não gostar, devolvemos 100% do valor.</div>
+    <div class="faq-item reveal" style="transition-delay:0.1s">
+      <button class="faq-btn" onclick="toggleFaq(this)">
+        Posso testar antes de assinar?
+        <span class="faq-arrow">▼</span>
+      </button>
+      <div class="faq-ans">
+        <div class="faq-ans-inner">Sim! A plataforma funcional está disponível para teste gratuito no link de demonstração. O plano Profissional tem 14 dias de garantia — se não gostar, devolvemos 100% do valor.</div>
+      </div>
     </div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">
-      As informações nutricionais são confiáveis? <span class="arrow">▼</span>
-    </button>
-    <div class="faq-a">
-      <div class="faq-a-inner">Os dados são baseados nas tabelas TACO (Tabela Brasileira de Composição de Alimentos) e USDA, gerados por IA de nutrição especializada. São valores de referência para acompanhamento — não substituem prescrição dietética formal, que deve ser feita pelo profissional habilitado.</div>
+    <div class="faq-item reveal" style="transition-delay:0.15s">
+      <button class="faq-btn" onclick="toggleFaq(this)">
+        As informações nutricionais são confiáveis?
+        <span class="faq-arrow">▼</span>
+      </button>
+      <div class="faq-ans">
+        <div class="faq-ans-inner">Os dados são baseados nas tabelas TACO e USDA. São valores de referência para acompanhamento — não substituem prescrição dietética formal, que deve ser feita pelo profissional habilitado.</div>
+      </div>
     </div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">
-      Como funciona o plano white-label? <span class="arrow">▼</span>
-    </button>
-    <div class="faq-a">
-      <div class="faq-a-inner">No plano Clínica, configuramos a plataforma com o nome, logo e cores da sua clínica. Seus pacientes veem sua marca, não a CalorIA Verde. É ideal para consultórios que querem uma experiência mais profissional e integrada.</div>
+    <div class="faq-item reveal" style="transition-delay:0.2s">
+      <button class="faq-btn" onclick="toggleFaq(this)">
+        Como funciona o plano white-label?
+        <span class="faq-arrow">▼</span>
+      </button>
+      <div class="faq-ans">
+        <div class="faq-ans-inner">No plano Clínica, configuramos a plataforma com o nome, logo e cores da sua clínica. Seus pacientes veem sua marca, não a CalorIA Verde. Ideal para consultórios que querem uma experiência mais integrada.</div>
+      </div>
     </div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFaq(this)">
-      Funciona no celular? <span class="arrow">▼</span>
-    </button>
-    <div class="faq-a">
-      <div class="faq-a-inner">Sim, a plataforma é totalmente responsiva e funciona no navegador de qualquer smartphone. A funcionalidade de câmera IA usa a câmera traseira do celular, o que facilita muito o registro do paciente durante as refeições. Um aplicativo nativo para iOS e Android está no roadmap.</div>
+    <div class="faq-item reveal" style="transition-delay:0.25s">
+      <button class="faq-btn" onclick="toggleFaq(this)">
+        Funciona no celular?
+        <span class="faq-arrow">▼</span>
+      </button>
+      <div class="faq-ans">
+        <div class="faq-ans-inner">Sim, a plataforma é totalmente responsiva e funciona no navegador de qualquer smartphone. A câmera IA usa a câmera traseira do celular, facilitando o registro durante as refeições. Um app nativo iOS e Android está no roadmap.</div>
+      </div>
     </div>
-  </div>
-</div>
-
-<!-- CTA FINAL -->
-<section class="cta-final">
-  <h2 class="cta-final-headline">
-    Seus pacientes merecem<br>
-    <em>acompanhamento de verdade.</em>
-  </h2>
-  <p class="cta-final-sub">
-    Comece hoje com o plano gratuito e conheça a plataforma. Quando sentir que vale, assine — sem compromisso, sem pegadinha.
-  </p>
-  <div class="cta-final-actions">
-    <a href="#planos" class="btn-final">Escolher meu plano →</a>
-    <a href="https://celadon-llama-666ed4.netlify.app/#app" class="btn-final-ghost" target="_blank">Ver demonstração ao vivo</a>
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ─── CTA FINAL ─── -->
+<section class="cta-final">
+  <div class="cta-final-bg"></div>
+  <div class="cta-final-deco"></div>
+
+  <div class="cta-final-tag reveal">
+    <span class="tag-dot"></span>
+    Sem risco · 14 dias de garantia
+  </div>
+  <h2 class="cta-final-h reveal">
+    Seus pacientes merecem<br>
+    <em>acompanhamento de verdade.</em>
+  </h2>
+  <p class="cta-final-sub reveal">
+    Comece hoje com o plano gratuito e conheça a plataforma. Quando sentir que vale, assine — sem compromisso, sem pegadinha.
+  </p>
+  <div class="cta-final-actions reveal">
+    <a href="#planos" class="btn-primary">Escolher meu plano ↗</a>
+    <a href="https://celadon-llama-666ed4.netlify.app/#app" class="btn-ghost" target="_blank">Ver demonstração ao vivo</a>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
 <footer>
-  <div class="footer-logo">Calor<span>IA</span> Verde</div>
+  <div class="footer-logo">Calor<span class="ia">IA</span> Verde</div>
   <div class="footer-links">
     <a href="#">Termos de Uso</a>
     <a href="#">Privacidade (LGPD)</a>
@@ -951,40 +1416,112 @@ footer {
 </footer>
 
 <script>
-// ── FADE IN OBSERVER ──
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-}, { threshold: 0.1 });
-document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+/* ── CURSOR ── */
+const dot  = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+if (window.innerWidth > 768) {
+  document.addEventListener('mousemove', e => {
+    dot.style.left  = (e.clientX - 6)  + 'px';
+    dot.style.top   = (e.clientY - 6)  + 'px';
+    ring.style.left = (e.clientX - 18) + 'px';
+    ring.style.top  = (e.clientY - 18) + 'px';
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => { ring.style.transform = 'scale(1.8)'; });
+    el.addEventListener('mouseleave', () => { ring.style.transform = 'scale(1)'; });
+  });
+}
 
-// ── FAQ ──
+/* ── NAV SCROLL ── */
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ── MOBILE MENU ── */
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.add('open');
+  document.getElementById('mobileMenu').style.display = 'flex';
+});
+document.getElementById('mobileClose').addEventListener('click', closeMobileMenu);
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  setTimeout(() => { document.getElementById('mobileMenu').style.display = 'none'; }, 300);
+}
+
+/* ── SCROLL REVEAL ── */
+const revObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => revObs.observe(el));
+
+/* ── FAQ ── */
 function toggleFaq(btn) {
-  const answer = btn.nextElementSibling;
+  const ans = btn.nextElementSibling;
   const isOpen = btn.classList.contains('open');
-  document.querySelectorAll('.faq-q.open').forEach(b => {
+  document.querySelectorAll('.faq-btn.open').forEach(b => {
     b.classList.remove('open');
     b.nextElementSibling.style.maxHeight = null;
   });
   if (!isOpen) {
     btn.classList.add('open');
-    answer.style.maxHeight = answer.scrollHeight + 'px';
+    ans.style.maxHeight = ans.scrollHeight + 'px';
   }
 }
 
-// ── NAV SCROLL ──
-const navEl = document.querySelector('nav');
+/* ── COUNTER ANIMADO ── */
+function animateCounter(el, target, duration = 2000) {
+  let start = 0; const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start += step;
+    if (start >= target) { el.textContent = '+' + target; clearInterval(timer); }
+    else el.textContent = '+' + Math.floor(start);
+  }, 16);
+}
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const t = parseInt(e.target.dataset.target);
+      if (t) animateCounter(e.target, t);
+      counterObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-target]').forEach(el => counterObs.observe(el));
+
+/* ── PARALLAX HERO BG ── */
 window.addEventListener('scroll', () => {
-  if (window.scrollY > 40) navEl.style.padding = '0.8rem 4rem';
-  else navEl.style.padding = '1.2rem 4rem';
+  const y = window.scrollY;
+  const blob = document.querySelector('.hero-bg-blob');
+  if (blob) blob.style.transform = `translateY(${y * 0.12}px)`;
 });
 
-// ── SMOOTH ANCHOR ──
+/* ── SMOOTH ANCHOR ── */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     const target = document.querySelector(a.getAttribute('href'));
     if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
   });
 });
+
+/* ── BARRAS DE NUTRIENTES ANIMADAS (scroll reveal) ── */
+const ntObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.nt-fill').forEach(fill => {
+        const w = fill.style.width; fill.style.width = '0';
+        setTimeout(() => { fill.style.transition = 'width 1.2s ease-out'; fill.style.width = w; }, 100);
+      });
+      ntObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.4 });
+document.querySelectorAll('.nutrient-bar').forEach(el => ntObs.observe(el));
 </script>
 </body>
 </html>
