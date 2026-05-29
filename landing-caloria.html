@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CalorIA Verde — Plataforma Nutricional para Profissionais</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0e1a10;
+  --forest: #1a4a1f;
+  --moss: #2d7a35;
+  --sage: #5a9a60;
+  --mint: #c8e6c9;
+  --cream: #f5f0e8;
+  --warm: #faf6ee;
+  --gold: #c8961a;
+  --gold-light: #f5c842;
+  --rust: #c44b1a;
+  --white: #ffffff;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--moss); border-radius: 3px; }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem 4rem;
+  background: rgba(245, 240, 232, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(26,74,31,0.08);
+  transition: padding 0.3s;
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 700; font-style: italic;
+  color: var(--forest); letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--gold); }
+.nav-links { display: flex; align-items: center; gap: 2.5rem; }
+.nav-links a {
+  font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 600;
+  letter-spacing: 0.8px; text-transform: uppercase; text-decoration: none;
+  color: var(--forest); opacity: 0.7; transition: opacity 0.2s;
+}
+.nav-links a:hover { opacity: 1; }
+.nav-cta {
+  background: var(--forest); color: var(--white);
+  font-family: 'Syne', sans-serif; font-weight: 700;
+  font-size: 0.82rem; letter-spacing: 0.5px;
+  padding: 0.65rem 1.5rem; border-radius: 50px; border: none;
+  cursor: pointer; text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+.nav-cta:hover { background: var(--moss); transform: translateY(-1px); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: grid; grid-template-columns: 1fr 1fr;
+  padding: 0 4rem; padding-top: 80px;
+  position: relative; overflow: hidden;
+}
+
+.hero-left {
+  display: flex; flex-direction: column;
+  justify-content: center; padding: 4rem 3rem 4rem 0;
+  position: relative; z-index: 2;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: 'Syne', sans-serif; font-size: 0.75rem;
+  font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1.5rem;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: block; width: 28px; height: 2px; background: var(--gold);
+}
+
+.hero-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.2rem, 5.5vw, 5.5rem);
+  font-weight: 700; line-height: 1.06;
+  color: var(--forest); margin-bottom: 1.5rem;
+}
+.hero-headline em {
+  font-style: italic; color: var(--gold);
+}
+.hero-headline .outline {
+  -webkit-text-stroke: 1.5px var(--forest);
+  color: transparent;
+}
+
+.hero-body {
+  font-size: 1.05rem; color: #4a5c4d;
+  line-height: 1.8; max-width: 480px; margin-bottom: 2.5rem;
+}
+
+.hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+
+.btn-hero-primary {
+  background: var(--forest); color: var(--white);
+  font-family: 'Syne', sans-serif; font-weight: 700;
+  font-size: 0.95rem; padding: 1rem 2rem;
+  border-radius: 50px; border: none; cursor: pointer;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
+  transition: all 0.25s;
+  box-shadow: 0 8px 32px rgba(26,74,31,0.25);
+}
+.btn-hero-primary:hover { background: var(--moss); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(26,74,31,0.3); }
+
+.btn-hero-ghost {
+  color: var(--forest); font-family: 'Syne', sans-serif; font-weight: 600;
+  font-size: 0.9rem; padding: 1rem 1.5rem;
+  border: 1.5px solid rgba(26,74,31,0.25); border-radius: 50px;
+  background: transparent; cursor: pointer; text-decoration: none;
+  transition: all 0.2s;
+}
+.btn-hero-ghost:hover { border-color: var(--forest); background: rgba(26,74,31,0.04); }
+
+.hero-social-proof {
+  margin-top: 3rem; display: flex; align-items: center; gap: 1.5rem;
+  padding-top: 2rem; border-top: 1px solid rgba(26,74,31,0.1);
+}
+.proof-avatars {
+  display: flex;
+}
+.proof-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 2.5px solid var(--cream);
+  background: var(--moss); margin-left: -10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 700; color: white;
+  font-family: 'Syne', sans-serif;
+}
+.proof-avatar:first-child { margin-left: 0; }
+.proof-text { font-size: 0.85rem; color: #5a6b5c; line-height: 1.5; }
+.proof-text strong { color: var(--forest); font-weight: 600; }
+
+/* Hero visual right */
+.hero-right {
+  display: flex; align-items: center; justify-content: center;
+  position: relative; padding: 4rem 0 4rem 2rem;
+}
+
+.hero-visual {
+  width: 100%; max-width: 520px;
+  background: var(--forest);
+  border-radius: 32px;
+  padding: 2rem;
+  position: relative;
+  box-shadow: 0 40px 80px rgba(14,26,16,0.3), 0 0 0 1px rgba(255,255,255,0.05) inset;
+}
+
+.visual-header {
+  display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.visual-dots { display: flex; gap: 5px; }
+.visual-dots span {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.visual-dots span:nth-child(1) { background: #ff5f57; }
+.visual-dots span:nth-child(2) { background: #ffbd2e; }
+.visual-dots span:nth-child(3) { background: #28c940; }
+.visual-title-bar {
+  flex: 1; background: rgba(255,255,255,0.06); border-radius: 6px;
+  height: 28px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; color: rgba(255,255,255,0.4); font-family: 'Syne', sans-serif;
+}
+
+.visual-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem;
+}
+.visual-card-label {
+  font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.4); font-family: 'Syne', sans-serif;
+  font-weight: 700; margin-bottom: 0.5rem;
+}
+.visual-patient-row {
+  display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.visual-patient-row:last-child { border-bottom: none; }
+.visual-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--sage), var(--moss));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 700; color: white;
+  font-family: 'Syne', sans-serif; flex-shrink: 0;
+}
+.visual-patient-info { flex: 1; }
+.visual-patient-name { font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.85); font-family: 'Syne', sans-serif; }
+.visual-patient-sub { font-size: 0.65rem; color: rgba(255,255,255,0.4); }
+.visual-badge {
+  font-size: 0.62rem; font-family: 'Syne', sans-serif; font-weight: 700;
+  padding: 0.25rem 0.6rem; border-radius: 50px;
+}
+.badge-green { background: rgba(90,154,96,0.2); color: #81c784; }
+.badge-yellow { background: rgba(200,150,26,0.2); color: #ffd54f; }
+.badge-red { background: rgba(196,75,26,0.2); color: #ff8a65; }
+
+.visual-stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-top: 1rem; }
+.visual-stat {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px; padding: 0.75rem;
+  text-align: center;
+}
+.visual-stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--gold-light);
+}
+.visual-stat-label { font-size: 0.58rem; color: rgba(255,255,255,0.4); font-family: 'Syne', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.floating-pill {
+  position: absolute;
+  background: var(--white); border-radius: 50px;
+  padding: 0.6rem 1.1rem;
+  display: flex; align-items: center; gap: 0.5rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 700;
+  color: var(--forest);
+  animation: float 4s ease-in-out infinite alternate;
+}
+.floating-pill.pill-1 {
+  top: -16px; right: -24px;
+  animation-delay: 0s;
+}
+.floating-pill.pill-2 {
+  bottom: 30px; left: -32px;
+  animation-delay: 1.5s;
+}
+@keyframes float {
+  from { transform: translateY(0px); }
+  to   { transform: translateY(-8px); }
+}
+.pill-dot { width: 8px; height: 8px; border-radius: 50%; background: #28c940; }
+
+/* ─── BENTO FEATURES ─── */
+.bento { padding: 6rem 4rem; }
+
+.section-label {
+  font-family: 'Syne', sans-serif; font-size: 0.72rem;
+  font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--moss); margin-bottom: 1rem;
+}
+.section-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 4vw, 4rem); font-weight: 700;
+  color: var(--forest); line-height: 1.1; margin-bottom: 1rem;
+}
+.section-headline em { font-style: italic; color: var(--gold); }
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto;
+  gap: 1rem; margin-top: 3rem;
+}
+
+.bento-cell {
+  border-radius: 24px;
+  padding: 2rem;
+  position: relative; overflow: hidden;
+  transition: transform 0.3s;
+}
+.bento-cell:hover { transform: translateY(-4px); }
+
+.bento-cell.big { grid-column: span 7; grid-row: span 2; background: var(--forest); color: white; padding: 2.5rem; }
+.bento-cell.med { grid-column: span 5; background: var(--white); }
+.bento-cell.med2 { grid-column: span 5; background: var(--gold-light); }
+.bento-cell.full-5 { grid-column: span 5; background: var(--ink); color: white; }
+.bento-cell.sm1 { grid-column: span 4; background: var(--white); }
+.bento-cell.sm2 { grid-column: span 4; background: var(--mint); }
+.bento-cell.sm3 { grid-column: span 4; background: var(--white); }
+
+.bento-icon {
+  font-size: 2.2rem; margin-bottom: 1rem; display: block;
+}
+.bento-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 700; line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+.bento-cell.big .bento-title { font-size: 2.2rem; color: white; }
+.bento-cell.ink .bento-title { color: white; }
+.bento-body { font-size: 0.88rem; line-height: 1.75; opacity: 0.75; }
+.bento-cell.big .bento-body { color: rgba(255,255,255,0.7); font-size: 0.95rem; }
+
+.bento-big-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 5rem; font-weight: 700; color: var(--gold-light);
+  line-height: 1; margin-top: auto;
+}
+.bento-big-sublabel {
+  font-family: 'Syne', sans-serif; font-size: 0.72rem;
+  color: rgba(255,255,255,0.4); letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.bento-cell.big::after {
+  content: '';
+  position: absolute; bottom: -40px; right: -40px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,150,26,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.bento-chip {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 700;
+  background: rgba(26,74,31,0.1); color: var(--forest);
+  padding: 0.3rem 0.8rem; border-radius: 50px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
+}
+
+/* ─── HOW IT WORKS ─── */
+.how { padding: 5rem 4rem; background: var(--forest); }
+
+.how-label { color: rgba(255,255,255,0.5); }
+.how .section-headline { color: white; }
+
+.steps {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 2rem; margin-top: 4rem; position: relative;
+}
+.steps::before {
+  content: '';
+  position: absolute; top: 2.5rem; left: 10%; right: 10%;
+  height: 1px; background: rgba(255,255,255,0.1);
+  pointer-events: none;
+}
+.step { position: relative; }
+.step-num {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(200,150,26,0.15); border: 1.5px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700;
+  color: var(--gold-light); margin-bottom: 1.5rem; position: relative; z-index: 1;
+}
+.step-title {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
+  color: white; margin-bottom: 0.5rem;
+}
+.step-body { font-size: 0.85rem; color: rgba(255,255,255,0.55); line-height: 1.75; }
+
+/* ─── PRICING ─── */
+.pricing { padding: 6rem 4rem; }
+
+.pricing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
+
+.plan-card {
+  border-radius: 24px; padding: 2.5rem;
+  border: 1.5px solid rgba(26,74,31,0.1);
+  background: var(--white); position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.plan-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(26,74,31,0.12); }
+.plan-card.featured {
+  background: var(--forest); border-color: transparent;
+  box-shadow: 0 20px 60px rgba(26,74,31,0.35);
+}
+.plan-badge {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  background: var(--gold); color: var(--ink);
+  font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 0.3rem 1rem; border-radius: 50px;
+}
+.plan-name {
+  font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--moss); margin-bottom: 1rem;
+}
+.plan-card.featured .plan-name { color: rgba(255,255,255,0.55); }
+.plan-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.2rem; font-weight: 700; line-height: 1;
+  color: var(--forest); margin-bottom: 0.25rem;
+}
+.plan-card.featured .plan-price { color: white; }
+.plan-period { font-size: 0.82rem; color: #888; margin-bottom: 1.5rem; }
+.plan-card.featured .plan-period { color: rgba(255,255,255,0.45); }
+.plan-desc { font-size: 0.85rem; color: #666; margin-bottom: 2rem; line-height: 1.7; }
+.plan-card.featured .plan-desc { color: rgba(255,255,255,0.6); }
+
+.plan-features { list-style: none; margin-bottom: 2rem; }
+.plan-features li {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  font-size: 0.85rem; padding: 0.45rem 0;
+  color: #444; line-height: 1.5;
+}
+.plan-card.featured .plan-features li { color: rgba(255,255,255,0.75); }
+.plan-check { color: var(--moss); font-size: 0.9rem; flex-shrink: 0; margin-top: 0.1rem; }
+.plan-card.featured .plan-check { color: var(--gold-light); }
+
+.btn-plan {
+  width: 100%; padding: 0.95rem;
+  border-radius: 50px; border: 1.5px solid var(--forest);
+  background: transparent; color: var(--forest);
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-plan:hover { background: var(--forest); color: white; }
+.plan-card.featured .btn-plan {
+  background: var(--gold); color: var(--ink); border-color: var(--gold);
+}
+.plan-card.featured .btn-plan:hover { background: var(--gold-light); }
+
+/* ─── TESTIMONIALS ─── */
+.testimonials { padding: 5rem 4rem; background: var(--warm); }
+.testi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
+.testi-card {
+  background: var(--white); border-radius: 20px;
+  padding: 2rem; border: 1px solid rgba(26,74,31,0.06);
+}
+.testi-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; letter-spacing: 2px; }
+.testi-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; font-style: italic; line-height: 1.7;
+  color: var(--forest); margin-bottom: 1.5rem;
+}
+.testi-author { display: flex; align-items: center; gap: 0.75rem; }
+.testi-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--sage), var(--moss));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 700;
+  font-size: 0.75rem; color: white;
+}
+.testi-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--forest); }
+.testi-role { font-size: 0.75rem; color: #888; }
+
+/* ─── FAQ ─── */
+.faq { padding: 5rem 4rem; max-width: 780px; margin: 0 auto; }
+.faq-title { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 700; color: var(--forest); margin-bottom: 2.5rem; text-align: center; }
+.faq-item { border-bottom: 1px solid rgba(26,74,31,0.08); }
+.faq-q {
+  width: 100%; text-align: left; background: none; border: none;
+  padding: 1.2rem 0; cursor: pointer;
+  font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.95rem;
+  color: var(--forest); display: flex; justify-content: space-between; align-items: center;
+}
+.faq-q .arrow { transition: transform 0.3s; font-size: 0.8rem; }
+.faq-q.open .arrow { transform: rotate(180deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+.faq-a-inner { padding-bottom: 1.2rem; font-size: 0.88rem; color: #5a6b5c; line-height: 1.8; }
+
+/* ─── CTA FINAL ─── */
+.cta-final {
+  padding: 7rem 4rem; text-align: center;
+  background: var(--forest);
+  position: relative; overflow: hidden;
+}
+.cta-final::before {
+  content: '';
+  position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,150,26,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-final-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700;
+  color: white; line-height: 1.1; margin-bottom: 1.5rem;
+  position: relative; z-index: 1;
+}
+.cta-final-headline em { font-style: italic; color: var(--gold-light); }
+.cta-final-sub {
+  font-size: 1rem; color: rgba(255,255,255,0.6);
+  max-width: 500px; margin: 0 auto 2.5rem;
+  line-height: 1.8; position: relative; z-index: 1;
+}
+.cta-final-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+
+.btn-final {
+  background: var(--gold); color: var(--ink);
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem;
+  padding: 1.1rem 2.5rem; border-radius: 50px; border: none;
+  cursor: pointer; text-decoration: none;
+  transition: all 0.25s;
+  box-shadow: 0 8px 32px rgba(200,150,26,0.4);
+}
+.btn-final:hover { background: var(--gold-light); transform: translateY(-3px); box-shadow: 0 16px 48px rgba(200,150,26,0.5); }
+
+.btn-final-ghost {
+  background: transparent; color: rgba(255,255,255,0.75);
+  font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.95rem;
+  padding: 1.1rem 2rem; border-radius: 50px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  cursor: pointer; text-decoration: none; transition: all 0.2s;
+}
+.btn-final-ghost:hover { border-color: rgba(255,255,255,0.5); color: white; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink); color: rgba(255,255,255,0.45);
+  padding: 3rem 4rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1.5rem;
+}
+.footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 700; font-style: italic;
+  color: rgba(255,255,255,0.7);
+}
+.footer-logo span { color: var(--gold); }
+.footer-links { display: flex; gap: 2rem; }
+.footer-links a { font-size: 0.8rem; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; font-family: 'Syne', sans-serif; }
+.footer-links a:hover { color: rgba(255,255,255,0.7); }
+.footer-copy { font-size: 0.75rem; }
+
+/* ─── FADE-IN ANIMATION ─── */
+.fade-in {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 960px) {
+  nav { padding: 1rem 2rem; }
+  .nav-links { gap: 1.5rem; }
+  .hero { grid-template-columns: 1fr; padding: 2rem; padding-top: 80px; }
+  .hero-left { padding: 3rem 0; }
+  .hero-right { display: none; }
+  .bento { padding: 4rem 2rem; }
+  .bento-grid { grid-template-columns: 1fr 1fr; }
+  .bento-cell.big { grid-column: span 2; }
+  .bento-cell.med, .bento-cell.med2, .bento-cell.full-5 { grid-column: span 1; }
+  .bento-cell.sm1, .bento-cell.sm2, .bento-cell.sm3 { grid-column: span 1; }
+  .how { padding: 4rem 2rem; }
+  .steps { grid-template-columns: 1fr 1fr; }
+  .pricing { padding: 4rem 2rem; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .testimonials { padding: 4rem 2rem; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .faq { padding: 4rem 2rem; }
+  .cta-final { padding: 5rem 2rem; }
+  footer { padding: 2rem; flex-direction: column; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Calor<span>IA</span> Verde</div>
+  <div class="nav-links">
+    <a href="#funcionalidades">Funcionalidades</a>
+    <a href="#planos">Planos</a>
+    <a href="#faq">FAQ</a>
+    <a href="https://celadon-llama-666ed4.netlify.app/#app" class="nav-cta" target="_blank">Testar grátis →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left fade-in">
+    <div class="hero-eyebrow">Para Nutricionistas & Personal Trainers</div>
+    <h1 class="hero-headline">
+      Seus pacientes.<br>
+      <em>Acompanhados</em><br>
+      de verdade.
+    </h1>
+    <p class="hero-body">
+      CalorIA Verde é a plataforma de nutrição inteligente que você indica aos seus pacientes — e ainda gerencia o progresso de todos em um só painel.
+    </p>
+    <div class="hero-actions">
+      <a href="#planos" class="btn-hero-primary">Começar agora ↗</a>
+      <a href="https://celadon-llama-666ed4.netlify.app/#app" class="btn-hero-ghost" target="_blank">Ver demonstração</a>
+    </div>
+    <div class="hero-social-proof">
+      <div class="proof-avatars">
+        <div class="proof-avatar">MR</div>
+        <div class="proof-avatar">TL</div>
+        <div class="proof-avatar">CA</div>
+        <div class="proof-avatar">+</div>
+      </div>
+      <div class="proof-text">
+        <strong>+120 profissionais</strong> já usam em suas consultas<br>
+        Avaliação média 4.9 ★ entre os primeiros usuários
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right fade-in" style="transition-delay: 0.2s;">
+    <div class="hero-visual">
+      <div class="visual-header">
+        <div class="visual-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="visual-title-bar">Painel do Profissional — CalorIA Verde</div>
+      </div>
+
+      <div class="visual-card">
+        <div class="visual-card-label">Pacientes ativos hoje</div>
+        <div class="visual-patient-row">
+          <div class="visual-avatar">ML</div>
+          <div class="visual-patient-info">
+            <div class="visual-patient-name">Maria Lima</div>
+            <div class="visual-patient-sub">1.840 kcal · meta: 1.900</div>
+          </div>
+          <div class="visual-badge badge-green">No alvo</div>
+        </div>
+        <div class="visual-patient-row">
+          <div class="visual-avatar">JS</div>
+          <div class="visual-patient-info">
+            <div class="visual-patient-name">João Silva</div>
+            <div class="visual-patient-sub">2.430 kcal · meta: 2.100</div>
+          </div>
+          <div class="visual-badge badge-red">Acima</div>
+        </div>
+        <div class="visual-patient-row">
+          <div class="visual-avatar">AC</div>
+          <div class="visual-patient-info">
+            <div class="visual-patient-name">Ana Costa</div>
+            <div class="visual-patient-sub">680 kcal · meta: 1.800</div>
+          </div>
+          <div class="visual-badge badge-yellow">Atenção</div>
+        </div>
+      </div>
+
+      <div class="visual-stats-row">
+        <div class="visual-stat">
+          <div class="visual-stat-num">14</div>
+          <div class="visual-stat-label">Pacientes</div>
+        </div>
+        <div class="visual-stat">
+          <div class="visual-stat-num">92%</div>
+          <div class="visual-stat-label">Adesão</div>
+        </div>
+        <div class="visual-stat">
+          <div class="visual-stat-num">6</div>
+          <div class="visual-stat-label">Planos ativos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="floating-pill pill-1">
+      <div class="pill-dot"></div>
+      IA analisa alimentos por foto
+    </div>
+    <div class="floating-pill pill-2">
+      <div class="pill-dot"></div>
+      Diário sincronizado em tempo real
+    </div>
+  </div>
+</section>
+
+<!-- BENTO FEATURES -->
+<section class="bento" id="funcionalidades">
+  <div class="section-label fade-in">Funcionalidades</div>
+  <h2 class="section-headline fade-in">
+    Tudo que o profissional<br>
+    <em>precisa</em> em um lugar só.
+  </h2>
+
+  <div class="bento-grid">
+    <div class="bento-cell big fade-in">
+      <div class="bento-chip">⭐ Destaque</div>
+      <div class="bento-title">Painel de pacientes com acompanhamento em tempo real</div>
+      <p class="bento-body">Veja o diário alimentar de cada paciente, receba alertas quando alguém ultrapassa ou fica abaixo da meta calórica, e acompanhe a evolução semanal sem precisar perguntar por WhatsApp.</p>
+      <div style="margin-top: 2rem;">
+        <div class="bento-big-number">14+</div>
+        <div class="bento-big-sublabel">pacientes gerenciados por profissional</div>
+      </div>
+    </div>
+
+    <div class="bento-cell med fade-in">
+      <span class="bento-icon">📷</span>
+      <div class="bento-title">Câmera IA identifica alimentos</div>
+      <p class="bento-body">O paciente fotografa o prato e a IA retorna automaticamente calorias, macros e informações nutricionais completas. Fim do registro manual impreciso.</p>
+    </div>
+
+    <div class="bento-cell med2 fade-in">
+      <span class="bento-icon">🔍</span>
+      <div class="bento-title">Base com 900 mil+ alimentos</div>
+      <p class="bento-body">Busca rápida com dados baseados na tabela TACO e USDA. Resultados em português, ajustáveis por porção.</p>
+    </div>
+
+    <div class="bento-cell full-5 fade-in" style="background: var(--ink);">
+      <span class="bento-icon">⚡</span>
+      <div class="bento-title" style="color: white;">Calculadora metabólica (TMB + TDEE)</div>
+      <p class="bento-body" style="color: rgba(255,255,255,0.55);">Harris-Benedict com ajuste por nível de atividade. Gera automaticamente distribuição de macros para emagrecer, manter ou ganhar massa.</p>
+    </div>
+
+    <div class="bento-cell sm1 fade-in">
+      <span class="bento-icon">📖</span>
+      <div class="bento-title">Diário alimentar por refeição</div>
+      <p class="bento-body">Café, almoço, lanche e jantar registrados com barra de progresso de macros em tempo real.</p>
+    </div>
+
+    <div class="bento-cell sm2 fade-in">
+      <span class="bento-icon">⚖️</span>
+      <div class="bento-title">Comparador de alimentos</div>
+      <p class="bento-body">Compare dois alimentos lado a lado em calorias, proteínas, carboidratos e gorduras.</p>
+    </div>
+
+    <div class="bento-cell sm3 fade-in">
+      <span class="bento-icon">🥗</span>
+      <div class="bento-title">Receitas saudáveis filtradas</div>
+      <p class="bento-body">Receitas por refeição e objetivo: baixo em calorias, rico em proteína. Geradas e adaptadas por IA.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="como-funciona">
+  <div class="section-label how-label fade-in">Como funciona</div>
+  <h2 class="section-headline fade-in">Em 4 passos você já está<br><em>usando com seus pacientes</em></h2>
+
+  <div class="steps">
+    <div class="step fade-in">
+      <div class="step-num">1</div>
+      <div class="step-title">Crie sua conta de profissional</div>
+      <p class="step-body">Cadastre-se como nutricionista ou personal trainer. Leva menos de 2 minutos.</p>
+    </div>
+    <div class="step fade-in" style="transition-delay: 0.1s;">
+      <div class="step-num">2</div>
+      <div class="step-title">Convide seus pacientes</div>
+      <p class="step-body">Envie o link pelo WhatsApp ou e-mail. O paciente cria a conta e já fica vinculado a você.</p>
+    </div>
+    <div class="step fade-in" style="transition-delay: 0.2s;">
+      <div class="step-num">3</div>
+      <div class="step-title">Configure as metas individuais</div>
+      <p class="step-body">Defina a meta calórica e de macros para cada paciente dentro do painel do profissional.</p>
+    </div>
+    <div class="step fade-in" style="transition-delay: 0.3s;">
+      <div class="step-num">4</div>
+      <div class="step-title">Acompanhe em tempo real</div>
+      <p class="step-body">Veja o diário de todos os pacientes, receba alertas e intervenha quando necessário.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="planos">
+  <div class="section-label fade-in">Planos e preços</div>
+  <h2 class="section-headline fade-in">Simples, transparente,<br><em>sem surpresas.</em></h2>
+
+  <div class="pricing-grid">
+    <!-- Free -->
+    <div class="plan-card fade-in">
+      <div class="plan-name">Gratuito</div>
+      <div class="plan-price">R$0</div>
+      <div class="plan-period">para sempre</div>
+      <p class="plan-desc">Para experimentar a plataforma como paciente ou uso pessoal.</p>
+      <ul class="plan-features">
+        <li><span class="plan-check">✓</span>Busca nutricional ilimitada</li>
+        <li><span class="plan-check">✓</span>Calculadora metabólica</li>
+        <li><span class="plan-check">✓</span>Diário alimentar (1 dispositivo)</li>
+        <li><span class="plan-check">✓</span>Câmera IA (5 fotos/mês)</li>
+        <li><span class="plan-check">✓</span>Receitas filtradas</li>
+      </ul>
+      <button class="btn-plan">Começar grátis</button>
+    </div>
+
+    <!-- Pro -->
+    <div class="plan-card featured fade-in" style="transition-delay: 0.1s;">
+      <div class="plan-badge">Mais popular</div>
+      <div class="plan-name">Profissional</div>
+      <div class="plan-price">R$97</div>
+      <div class="plan-period">por mês · cancele quando quiser</div>
+      <p class="plan-desc">Para nutricionistas e personal trainers que querem gerenciar pacientes com eficiência.</p>
+      <ul class="plan-features">
+        <li><span class="plan-check">✓</span>Tudo do plano Gratuito</li>
+        <li><span class="plan-check">✓</span>Painel de pacientes</li>
+        <li><span class="plan-check">✓</span>Até 30 pacientes vinculados</li>
+        <li><span class="plan-check">✓</span>Câmera IA ilimitada</li>
+        <li><span class="plan-check">✓</span>Planos alimentares personalizados</li>
+        <li><span class="plan-check">✓</span>Diário sincronizado entre dispositivos</li>
+        <li><span class="plan-check">✓</span>Relatórios de progresso</li>
+      </ul>
+      <button class="btn-plan">Assinar agora →</button>
+    </div>
+
+    <!-- Clínica -->
+    <div class="plan-card fade-in" style="transition-delay: 0.2s;">
+      <div class="plan-name">Clínica / Consultório</div>
+      <div class="plan-price">R$197</div>
+      <div class="plan-period">por mês · até 3 profissionais</div>
+      <p class="plan-desc">Para clínicas com equipe multidisciplinar e volume alto de pacientes.</p>
+      <ul class="plan-features">
+        <li><span class="plan-check">✓</span>Tudo do plano Profissional</li>
+        <li><span class="plan-check">✓</span>Até 3 profissionais na conta</li>
+        <li><span class="plan-check">✓</span>Pacientes ilimitados</li>
+        <li><span class="plan-check">✓</span>White-label (sua marca + logo)</li>
+        <li><span class="plan-check">✓</span>Exportar PDF de prontuário</li>
+        <li><span class="plan-check">✓</span>Suporte prioritário</li>
+      </ul>
+      <button class="btn-plan">Falar com vendas</button>
+    </div>
+  </div>
+
+  <p style="text-align: center; margin-top: 2rem; font-size: 0.82rem; color: #888;">
+    💳 Sem contrato de fidelidade. Cancele a qualquer momento. · Pagamento via PIX, cartão ou boleto.
+  </p>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-label fade-in" style="text-align:center;">Depoimentos</div>
+  <h2 class="section-headline fade-in" style="text-align:center;">O que os profissionais<br><em>estão dizendo.</em></h2>
+
+  <div class="testi-grid">
+    <div class="testi-card fade-in">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Meus pacientes começaram a registrar as refeições de verdade depois que comecei a usar. A câmera IA foi o diferencial — ninguém mais diz que não sabe a quantidade."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">MC</div>
+        <div>
+          <div class="testi-name">Mariana Costa</div>
+          <div class="testi-role">Nutricionista · São Paulo</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card fade-in" style="transition-delay: 0.1s;">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Economizo pelo menos 40 minutos por dia que gastava pedindo print de diário por WhatsApp. O painel mostra tudo — quem registrou, quem estourou a meta, quem precisa de atenção."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">RF</div>
+        <div>
+          <div class="testi-name">Rafael Ferreira</div>
+          <div class="testi-role">Personal Trainer · Rio de Janeiro</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card fade-in" style="transition-delay: 0.2s;">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Nossa clínica tem 3 nutricionistas e o plano Clínica foi exatamente o que precisávamos. O white-label com nossa identidade visual deu um ar muito mais profissional para os pacientes."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">BL</div>
+        <div>
+          <div class="testi-name">Beatriz Leal</div>
+          <div class="testi-role">Nutricionista · Diretora Clínica Nutrir</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<div class="faq" id="faq">
+  <h2 class="faq-title">Perguntas frequentes</h2>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      Os dados dos meus pacientes ficam seguros? <span class="arrow">▼</span>
+    </button>
+    <div class="faq-a">
+      <div class="faq-a-inner">Sim. Usamos criptografia em trânsito (HTTPS) e em repouso. Os dados estão armazenados em servidores no Brasil, em conformidade com a LGPD. Nenhum dado de saúde é compartilhado com terceiros. Você pode solicitar a exclusão completa dos dados a qualquer momento.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      O paciente precisa pagar para usar? <span class="arrow">▼</span>
+    </button>
+    <div class="faq-a">
+      <div class="faq-a-inner">Não. O paciente tem acesso gratuito à plataforma — busca nutricional, calculadora e diário alimentar. Você, como profissional, paga a assinatura e libera as funcionalidades avançadas de acompanhamento para os seus pacientes.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      Posso testar antes de assinar? <span class="arrow">▼</span>
+    </button>
+    <div class="faq-a">
+      <div class="faq-a-inner">Sim! A plataforma funcional está disponível para teste gratuito no link de demonstração. O plano Profissional tem 14 dias de garantia — se não gostar, devolvemos 100% do valor.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      As informações nutricionais são confiáveis? <span class="arrow">▼</span>
+    </button>
+    <div class="faq-a">
+      <div class="faq-a-inner">Os dados são baseados nas tabelas TACO (Tabela Brasileira de Composição de Alimentos) e USDA, gerados por IA de nutrição especializada. São valores de referência para acompanhamento — não substituem prescrição dietética formal, que deve ser feita pelo profissional habilitado.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      Como funciona o plano white-label? <span class="arrow">▼</span>
+    </button>
+    <div class="faq-a">
+      <div class="faq-a-inner">No plano Clínica, configuramos a plataforma com o nome, logo e cores da sua clínica. Seus pacientes veem sua marca, não a CalorIA Verde. É ideal para consultórios que querem uma experiência mais profissional e integrada.</div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFaq(this)">
+      Funciona no celular? <span class="arrow">▼</span>
+    </button>
+    <div class="faq-a">
+      <div class="faq-a-inner">Sim, a plataforma é totalmente responsiva e funciona no navegador de qualquer smartphone. A funcionalidade de câmera IA usa a câmera traseira do celular, o que facilita muito o registro do paciente durante as refeições. Um aplicativo nativo para iOS e Android está no roadmap.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <h2 class="cta-final-headline">
+    Seus pacientes merecem<br>
+    <em>acompanhamento de verdade.</em>
+  </h2>
+  <p class="cta-final-sub">
+    Comece hoje com o plano gratuito e conheça a plataforma. Quando sentir que vale, assine — sem compromisso, sem pegadinha.
+  </p>
+  <div class="cta-final-actions">
+    <a href="#planos" class="btn-final">Escolher meu plano →</a>
+    <a href="https://celadon-llama-666ed4.netlify.app/#app" class="btn-final-ghost" target="_blank">Ver demonstração ao vivo</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Calor<span>IA</span> Verde</div>
+  <div class="footer-links">
+    <a href="#">Termos de Uso</a>
+    <a href="#">Privacidade (LGPD)</a>
+    <a href="#">Contato</a>
+    <a href="#">Suporte</a>
+  </div>
+  <div class="footer-copy">© 2025 CalorIA Verde. Todos os direitos reservados.</div>
+</footer>
+
+<script>
+// ── FADE IN OBSERVER ──
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+// ── FAQ ──
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const isOpen = btn.classList.contains('open');
+  document.querySelectorAll('.faq-q.open').forEach(b => {
+    b.classList.remove('open');
+    b.nextElementSibling.style.maxHeight = null;
+  });
+  if (!isOpen) {
+    btn.classList.add('open');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+  }
+}
+
+// ── NAV SCROLL ──
+const navEl = document.querySelector('nav');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 40) navEl.style.padding = '0.8rem 4rem';
+  else navEl.style.padding = '1.2rem 4rem';
+});
+
+// ── SMOOTH ANCHOR ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
+</body>
+</html>
